@@ -37,22 +37,22 @@ ssh ${SERVER_USER}@${SERVER_IP} << EOF
     set -e
     
     echo "安装必要软件..."
-    apt update
-    apt install -y nginx
+    sudo apt update
+    sudo apt install -y nginx
     
     echo "创建项目目录..."
-    mkdir -p ${REMOTE_PATH}
+    sudo mkdir -p ${REMOTE_PATH}
     
     echo "解压文件..."
     cd ${REMOTE_PATH}
-    tar -xzf /tmp/${PROJECT_NAME}-dist.tar.gz
+    sudo tar -xzf /tmp/${PROJECT_NAME}-dist.tar.gz
     
     echo "设置权限..."
-    chown -R www-data:www-data ${REMOTE_PATH}
-    chmod -R 755 ${REMOTE_PATH}
+    sudo chown -R www-data:www-data ${REMOTE_PATH}
+    sudo chmod -R 755 ${REMOTE_PATH}
     
     echo "配置 Nginx..."
-    cat > /etc/nginx/sites-available/${PROJECT_NAME} << 'NGINX_CONFIG'
+    sudo tee /etc/nginx/sites-available/${PROJECT_NAME} > /dev/null << 'NGINX_CONFIG'
 server {
     listen 80;
     server_name _;
@@ -101,15 +101,15 @@ server {
 NGINX_CONFIG
     
     echo "启用站点..."
-    ln -sf /etc/nginx/sites-available/${PROJECT_NAME} /etc/nginx/sites-enabled/
-    rm -f /etc/nginx/sites-enabled/default
+    sudo ln -sf /etc/nginx/sites-available/${PROJECT_NAME} /etc/nginx/sites-enabled/
+    sudo rm -f /etc/nginx/sites-enabled/default
     
     echo "测试 Nginx 配置..."
-    nginx -t
+    sudo nginx -t
     
     echo "重启 Nginx..."
-    systemctl restart nginx
-    systemctl enable nginx
+    sudo systemctl restart nginx
+    sudo systemctl enable nginx
     
     echo "清理临时文件..."
     rm -f /tmp/${PROJECT_NAME}-dist.tar.gz
