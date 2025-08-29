@@ -21,7 +21,7 @@ echo "🚀 开始部署 XSS Web 前端到服务器: ${SERVER_USER}@${SERVER_IP}"
 
 # 1. 构建生产版本
 echo "📦 构建生产版本..."
-REACT_APP_API_BASE_URL=http://${SERVER_IP}:8088 npm run build
+REACT_APP_API_BASE_URL=https://43.156.93.166 npm run build
 
 # 2. 创建部署包
 echo "📁 创建部署包..."
@@ -36,10 +36,6 @@ echo "⚙️  在服务器上执行部署..."
 ssh ${SERVER_USER}@${SERVER_IP} << EOF
     set -e
     
-    echo "安装必要软件..."
-    sudo apt update
-    sudo apt install -y nginx
-    
     echo "创建项目目录..."
     sudo mkdir -p ${REMOTE_PATH}
     
@@ -51,71 +47,11 @@ ssh ${SERVER_USER}@${SERVER_IP} << EOF
     sudo chown -R www-data:www-data ${REMOTE_PATH}
     sudo chmod -R 755 ${REMOTE_PATH}
     
-    echo "配置 Nginx..."
-    sudo tee /etc/nginx/sites-available/${PROJECT_NAME} > /dev/null << 'NGINX_CONFIG'
-server {
-    listen 80;
-    server_name _;
-    
-    root ${REMOTE_PATH};
-    index index.html;
-    
-    # Gzip 压缩
-    gzip on;
-    gzip_vary on;
-    gzip_min_length 1024;
-    gzip_types
-        text/plain
-        text/css
-        text/xml
-        text/javascript
-        application/javascript
-        application/xml+rss
-        application/json;
-    
-    location / {
-        try_files \$uri \$uri/ /index.html;
-        
-        # 缓存静态资源
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-            expires 1y;
-            add_header Cache-Control "public, immutable";
-        }
-    }
-    
-    # API 代理 (可选)
-    location /api/ {
-        proxy_pass http://localhost:8088/api/;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-    
-    # 安全头
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header Referrer-Policy "no-referrer-when-downgrade" always;
-}
-NGINX_CONFIG
-    
-    echo "启用站点..."
-    sudo ln -sf /etc/nginx/sites-available/${PROJECT_NAME} /etc/nginx/sites-enabled/
-    sudo rm -f /etc/nginx/sites-enabled/default
-    
-    echo "测试 Nginx 配置..."
-    sudo nginx -t
-    
-    echo "重启 Nginx..."
-    sudo systemctl restart nginx
-    sudo systemctl enable nginx
-    
     echo "清理临时文件..."
     rm -f /tmp/${PROJECT_NAME}-dist.tar.gz
     
     echo "✅ 部署完成!"
-    echo "🌐 访问地址: http://${SERVER_IP}"
+    echo "📁 文件已部署到: ${REMOTE_PATH}"
 EOF
 
 # 5. 清理本地文件
@@ -124,7 +60,7 @@ rm -f ${PROJECT_NAME}-dist.tar.gz
 
 echo ""
 echo "🎉 部署成功完成!"
-echo "🌐 前端访问地址: http://${SERVER_IP}"
-echo "📝 请确保你的 XSS 后端服务运行在: http://${SERVER_IP}:8088"
+echo "📁 前端文件已部署到: ${REMOTE_PATH}"
+echo "📝 请使用统一的nginx配置来提供服务"
 echo ""
 echo "如需更新部署，只需重新运行此脚本即可。"
