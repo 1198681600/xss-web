@@ -211,7 +211,9 @@ sudo ufw allow 22/tcp
 sudo ufw enable
 ```
 
-### 2. SSL 证书（可选）
+### 2. SSL 证书（推荐）
+
+**注意**: 现代浏览器要求HTTPS环境才能使用Clipboard API，为确保复制功能正常工作，强烈建议配置SSL证书。
 
 使用 Let's Encrypt：
 
@@ -227,6 +229,8 @@ sudo crontab -e
 # 添加以下行
 0 12 * * * /usr/bin/certbot renew --quiet
 ```
+
+如果无法配置HTTPS，应用会自动降级使用传统的复制方法。
 
 ## 📊 监控和维护
 

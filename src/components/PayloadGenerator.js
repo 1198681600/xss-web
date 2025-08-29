@@ -28,12 +28,52 @@ const PayloadGenerator = () => {
 
   const copyToClipboard = async (text, type) => {
     try {
-      await navigator.clipboard.writeText(text);
+      // 优先使用现代的 Clipboard API
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // 降级方案：使用传统的 execCommand
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (!successful) {
+          throw new Error('execCommand failed');
+        }
+      }
+      
       setCopied(type);
       setTimeout(() => setCopied(''), 2000);
     } catch (error) {
       console.error('复制失败:', error);
-      alert('复制失败，请手动复制');
+      
+      // 最后的降级方案：提示用户手动复制
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+      
+      if (isMobile) {
+        // 移动端：选中文本
+        const range = document.createRange();
+        const selection = window.getSelection();
+        const textElement = document.getElementById(`payload-${type}`);
+        if (textElement) {
+          range.selectNodeContents(textElement);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+        alert('已选中文本，请手动复制（Ctrl+C 或 Cmd+C）');
+      } else {
+        // 桌面端：显示文本让用户手动复制
+        prompt('复制失败，请手动复制以下内容:', text);
+      }
     }
   };
 
@@ -115,7 +155,7 @@ const PayloadGenerator = () => {
             </div>
             
             <div className="payload-item__code">
-              <pre className="payload-item__code-content">
+              <pre className="payload-item__code-content" id={`payload-${type.key}`}>
                 {payloads[type.key]}
               </pre>
             </div>

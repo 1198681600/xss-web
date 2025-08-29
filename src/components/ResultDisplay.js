@@ -18,12 +18,35 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
     });
   };
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text).then(() => {
+  const copyToClipboard = async (text) => {
+    try {
+      // 优先使用现代的 Clipboard API
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // 降级方案：使用传统的 execCommand
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (!successful) {
+          throw new Error('execCommand failed');
+        }
+      }
+      
       alert('已复制到剪贴板');
-    }).catch(() => {
-      alert('复制失败');
-    });
+    } catch (error) {
+      console.error('复制失败:', error);
+      prompt('复制失败，请手动复制以下内容:', text);
+    }
   };
 
   const exportResults = () => {
