@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  xss-web:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - REACT_APP_API_BASE_URL=http://localhost:8088
+    restart: unless-stopped
+    networks:
+      - xss-network
+
+networks:
+  xss-network:
+    external: true
