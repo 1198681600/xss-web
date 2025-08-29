@@ -1,0 +1,89 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.loading {
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Sizes */
+.loading--sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid;
+}
+
+.loading--md {
+  width: 24px;
+  height: 24px;
+  border: 3px solid;
+}
+
+.loading--lg {
+  width: 32px;
+  height: 32px;
+  border: 4px solid;
+}
+
+.loading--xl {
+  width: 48px;
+  height: 48px;
+  border: 4px solid;
+}
+
+/* Colors */
+.loading--primary {
+  border-color: var(--primary-color);
+  border-top-color: transparent;
+}
+
+.loading--secondary {
+  border-color: var(--secondary-color);
+  border-top-color: transparent;
+}
+
+.loading--success {
+  border-color: var(--success-color);
+  border-top-color: transparent;
+}
+
+.loading--danger {
+  border-color: var(--danger-color);
+  border-top-color: transparent;
+}
+
+.loading--warning {
+  border-color: var(--warning-color);
+  border-top-color: transparent;
+}
+
+.loading--white {
+  border-color: var(--text-white);
+  border-top-color: transparent;
+}
+
+.loading__text {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+  text-align: center;
+}
+
+/* Full screen loading */
+.loading--fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
