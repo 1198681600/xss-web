@@ -25,25 +25,19 @@ const TwoFactorSetup = ({ onComplete, onCancel }) => {
   const generateQRCode = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/users/${user.id}/2fa/setup`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${authService.getToken()}`,
-        },
-      });
-
-      const data = await response.json();
+      const setupData = await authService.setup2FA();
       
-      if (data.status !== 'success') {
-        throw new Error(data.message || '生成2FA密钥失败');
+      console.log('2FA Setup Response:', setupData);
+      setSecret(setupData.secret);
+      
+      // 检查是否需要添加data URI前缀
+      let qrCodeData = setupData.qr_code;
+      if (!qrCodeData.startsWith('data:')) {
+        qrCodeData = `data:image/png;base64,${qrCodeData}`;
       }
-
-      console.log('2FA Setup Response:', data);
-      setSecret(data.data.secret);
-      // 后端返回的是纯base64数据，需要添加data URI前缀
-      const qrDataUrl = `data:image/png;base64,${data.data.qr_code}`;
-      setQrCodeUrl(qrDataUrl);
-      console.log('QR Code URL set:', qrDataUrl.substring(0, 50) + '...');
+      
+      setQrCodeUrl(qrCodeData);
+      console.log('QR Code URL set:', qrCodeData.substring(0, 50) + '...');
     } catch (error) {
       setError(error.message);
       toast.error(`生成2FA设置失败: ${error.message}`);

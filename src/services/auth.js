@@ -217,6 +217,51 @@ class AuthService {
       throw error;
     }
   }
+
+  async setup2FA() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/me/2fa/setup`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+        },
+      });
+
+      const data = await response.json();
+      
+      if (data.status !== 'success') {
+        throw new Error(data.message || '设置2FA失败');
+      }
+
+      return data.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async disable2FA() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/me/2fa/disable`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+        },
+      });
+
+      const data = await response.json();
+      
+      if (data.status !== 'success') {
+        throw new Error(data.message || '禁用2FA失败');
+      }
+
+      // 更新本地用户信息
+      await this.getCurrentUser();
+      
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new AuthService();

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Badge, Button, Loading } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import SessionList from './SessionList';
+import AttackLogViewer from './AttackLogViewer';
 import projectService from '../services/project';
 import './ProjectDetail.css';
 
@@ -70,6 +71,7 @@ const ProjectDetail = ({
 
   const tabs = [
     { id: 'sessions', name: '会话列表', icon: '💻' },
+    { id: 'logs', name: '攻击记录', icon: '📋' },
     { id: 'stats', name: '统计信息', icon: '📊' },
     { id: 'payload', name: '载荷代码', icon: '🚀' },
     { id: 'settings', name: '项目设置', icon: '⚙️' }
@@ -190,6 +192,13 @@ const ProjectDetail = ({
               onSelectSession={setSelectedSession}
               selectedSessionId={selectedSession?.id}
               refreshTrigger={refreshTrigger}
+            />
+          )}
+
+          {activeTab === 'logs' && (
+            <AttackLogViewer
+              projectId={project.id}
+              title="项目攻击记录"
             />
           )}
 

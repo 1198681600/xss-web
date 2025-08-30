@@ -1,0 +1,153 @@
+.user-profile {
+  padding: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.user-profile__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.user-profile__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.user-profile__subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.user-profile__tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.user-profile__nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-profile__tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.user-profile__tab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.user-profile__tab--active {
+  background: var(--bg-card);
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.user-profile__tab-icon {
+  font-size: 1rem;
+}
+
+.user-profile__tab-content {
+  min-height: 400px;
+}
+
+.user-profile__info-card {
+  padding: 1.5rem;
+}
+
+.user-profile__info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-profile__info-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+}
+
+.user-profile__loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.user-profile__info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.user-profile__info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-profile__info-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-profile__info-value {
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.user-profile__error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--error-text);
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .user-profile {
+    padding: 1rem;
+  }
+  
+  .user-profile__info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .user-profile__nav {
+    flex-direction: column;
+  }
+  
+  .user-profile__tab {
+    border-radius: 8px;
+    justify-content: center;
+  }
+  
+  .user-profile__tab--active {
+    border-bottom: none;
+    border-left: 3px solid var(--primary-color);
+  }
+}

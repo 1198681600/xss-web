@@ -45,25 +45,10 @@ const TwoFactorManagement = () => {
 
     try {
       setIsLoading(true);
-      const user = authService.getUser();
-      const response = await fetch(`${API_BASE_URL}/api/users/${user.id}/2fa/disable`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${authService.getToken()}`,
-        },
-      });
-
-      const data = await response.json();
-      
-      if (data.status === 'success') {
-        // 重新获取最新用户信息
-        await checkTwoFactorStatus();
-        setError('');
-        toast.success('2FA已禁用');
-      } else {
-        setError(data.message || '禁用2FA失败');
-        toast.error(data.message || '禁用2FA失败');
-      }
+      await authService.disable2FA();
+      await checkTwoFactorStatus();
+      setError('');
+      toast.success('2FA已禁用');
     } catch (error) {
       setError(error.message);
       toast.error(`禁用2FA失败: ${error.message}`);

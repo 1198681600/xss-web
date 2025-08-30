@@ -70,6 +70,17 @@ export const AuthProvider = ({ children }) => {
     return user?.role === 'user';
   };
 
+  const refreshUserInfo = async () => {
+    try {
+      const updatedUser = await authService.getCurrentUser();
+      setUser(updatedUser);
+      return updatedUser;
+    } catch (error) {
+      console.error('刷新用户信息失败:', error);
+      return null;
+    }
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -78,6 +89,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAdmin,
     isUser,
+    refreshUserInfo,
     authService
   };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Badge, Button, Loading } from './ui';
+import AttackLogViewer from './AttackLogViewer';
 import projectService from '../services/project';
 import './SessionList.css';
 
@@ -9,6 +10,7 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
   const [activeSessions, setActiveSessions] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [viewingSessionLogs, setViewingSessionLogs] = useState(null);
 
   const loadSessions = async () => {
     if (!projectId) return;
@@ -71,11 +73,41 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
     return url.length > maxLength ? `${url.substring(0, maxLength)}...` : url;
   };
 
+  const handleViewLogs = (session, event) => {
+    event.stopPropagation();
+    setViewingSessionLogs(session);
+  };
+
+  const handleBackToSessions = () => {
+    setViewingSessionLogs(null);
+  };
+
   if (isLoading) {
     return (
       <div className="session-list__loading">
         <Loading />
         <p>加载会话数据...</p>
+      </div>
+    );
+  }
+
+  if (viewingSessionLogs) {
+    return (
+      <div className="session-list">
+        <div className="session-list__logs-header">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBackToSessions}
+          >
+            ← 返回会话列表
+          </Button>
+          <h3>📱 会话 {viewingSessionLogs.jid} 的攻击记录</h3>
+        </div>
+        <AttackLogViewer
+          sessionId={viewingSessionLogs.id}
+          title={`会话 ${viewingSessionLogs.jid} 攻击记录`}
+        />
       </div>
     );
   }
@@ -139,6 +171,7 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
               <div className="session-list__cell session-list__cell--count">连接</div>
               <div className="session-list__cell session-list__cell--cookie">Cookie</div>
               <div className="session-list__cell session-list__cell--events">事件类型</div>
+              <div className="session-list__cell session-list__cell--actions">操作</div>
             </div>
           </div>
           
@@ -208,6 +241,16 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
                 </div>
                 <div className="session-list__cell session-list__cell--events">
                   <span className="session-list__event-type">{session.event_type}</span>
+                </div>
+                <div className="session-list__cell session-list__cell--actions">
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    onClick={(e) => handleViewLogs(session, e)}
+                    title="查看攻击记录"
+                  >
+                    📋 记录
+                  </Button>
                 </div>
               </div>
             ))}
