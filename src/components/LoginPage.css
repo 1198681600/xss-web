@@ -82,6 +82,17 @@
   font-style: italic;
 }
 
+.login-page__2fa-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0 0;
+  text-align: center;
+}
+
+.login-page__back {
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 480px) {
   .login-page__card {
     padding: 1.5rem;

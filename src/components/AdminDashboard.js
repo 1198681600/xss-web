@@ -42,10 +42,6 @@ const AdminDashboard = () => {
 
   const tabs = [
     { id: 'projects', name: '项目管理', icon: '📁' },
-    { id: 'clients', name: '客户端管理', icon: '👥' },
-    { id: 'command', name: '命令面板', icon: '⚡' },
-    { id: 'results', name: '执行结果', icon: '📊', badge: commandResults.length > 0 ? commandResults.length : null },
-    { id: 'payload', name: '载荷生成', icon: '🚀' },
     { id: 'users', name: '用户管理', icon: '👤' }
   ];
 
@@ -124,75 +120,10 @@ const AdminDashboard = () => {
         <div className="admin-dashboard__content">
           {activeTab === 'projects' && (
             <div className="admin-dashboard__tab-content">
-              <ProjectDashboard onProjectSelect={setSelectedProject} />
+              <ProjectDashboard onProjectSelect={setSelectedProject} hideHeader={true} />
             </div>
           )}
 
-          {activeTab === 'clients' && (
-            <div className="admin-dashboard__tab-content">
-              {!selectedProject ? (
-                <div className="admin-dashboard__project-required">
-                  <h3>请先选择项目</h3>
-                  <p>在"项目管理"中选择一个项目后，才能查看该项目的客户端</p>
-                  <Button onClick={() => setActiveTab('projects')}>
-                    前往项目管理
-                  </Button>
-                </div>
-              ) : (
-                <ClientList
-                  onSelectClient={handleSelectClient}
-                  selectedClientId={selectedClient?.id}
-                  refreshTrigger={refreshTrigger}
-                  projectId={selectedProject.id}
-                />
-              )}
-            </div>
-          )}
-
-          {activeTab === 'command' && (
-            <div className="admin-dashboard__tab-content">
-              {!selectedProject ? (
-                <div className="admin-dashboard__project-required">
-                  <h3>请先选择项目</h3>
-                  <p>在"项目管理"中选择一个项目后，才能执行命令</p>
-                  <Button onClick={() => setActiveTab('projects')}>
-                    前往项目管理
-                  </Button>
-                </div>
-              ) : (
-                <CommandPanel
-                  selectedClient={selectedClient}
-                  onCommandResult={handleCommandResult}
-                  projectId={selectedProject.id}
-                />
-              )}
-            </div>
-          )}
-
-          {activeTab === 'results' && (
-            <div className="admin-dashboard__tab-content">
-              <ResultDisplay
-                results={commandResults}
-                onClearResults={handleClearResults}
-              />
-            </div>
-          )}
-
-          {activeTab === 'payload' && (
-            <div className="admin-dashboard__tab-content">
-              {!selectedProject ? (
-                <div className="admin-dashboard__project-required">
-                  <h3>请先选择项目</h3>
-                  <p>在"项目管理"中选择一个项目后，才能生成该项目的载荷</p>
-                  <Button onClick={() => setActiveTab('projects')}>
-                    前往项目管理
-                  </Button>
-                </div>
-              ) : (
-                <PayloadGenerator projectId={selectedProject.id} />
-              )}
-            </div>
-          )}
 
           {activeTab === 'users' && (
             <div className="admin-dashboard__tab-content">

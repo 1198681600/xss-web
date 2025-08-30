@@ -1,0 +1,120 @@
+.two-factor-management {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.two-factor-management__header {
+  margin-bottom: 1.5rem;
+}
+
+.two-factor-management__title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.two-factor-management__subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.two-factor-management__loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.two-factor-management__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.two-factor-management__status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.two-factor-management__status-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.two-factor-management__status-label {
+  font-weight: 500;
+  color: var(--text-primary);
+  min-width: 80px;
+}
+
+.two-factor-management__status-value {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.two-factor-management__error {
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: var(--error-text);
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.two-factor-management__description {
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.two-factor-management__description h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.two-factor-management__description p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.two-factor-management__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.two-factor-management__benefits {
+  padding: 1rem;
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-radius: 6px;
+}
+
+.two-factor-management__benefits h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--success-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.two-factor-management__benefits ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.two-factor-management__benefits li {
+  color: var(--success-text);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}

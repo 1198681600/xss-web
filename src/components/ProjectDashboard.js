@@ -7,7 +7,7 @@ import ProjectForm from './ProjectForm';
 import projectService from '../services/project';
 import './ProjectDashboard.css';
 
-const ProjectDashboard = ({ onProjectSelect }) => {
+const ProjectDashboard = ({ onProjectSelect, hideHeader = false }) => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
@@ -83,39 +83,41 @@ const ProjectDashboard = ({ onProjectSelect }) => {
 
   return (
     <div className="project-dashboard">
-      <header className="project-dashboard__header">
-        <div className="project-dashboard__header-content">
-          <div className="project-dashboard__header-left">
-            <h1 className="project-dashboard__title">
-              🎯 XSS 项目管理平台
-            </h1>
-            <p className="project-dashboard__subtitle">
-              项目化管理XSS安全测试
-            </p>
-          </div>
-          <div className="project-dashboard__header-right">
-            <div className="project-dashboard__user-info">
-              <span className="project-dashboard__welcome">
-                欢迎, {user?.username}
-              </span>
-              <Badge variant={isAdmin() ? 'danger' : 'primary'} size="sm">
-                {isAdmin() ? '管理员' : '普通用户'}
-              </Badge>
+      {!hideHeader && (
+        <header className="project-dashboard__header">
+          <div className="project-dashboard__header-content">
+            <div className="project-dashboard__header-left">
+              <h1 className="project-dashboard__title">
+                🎯 XSS 项目管理平台
+              </h1>
+              <p className="project-dashboard__subtitle">
+                项目化管理XSS安全测试
+              </p>
             </div>
-            <div className="project-dashboard__connection-status">
-              <span className="project-dashboard__connection-label">API:</span>
-              {getConnectionStatus()}
+            <div className="project-dashboard__header-right">
+              <div className="project-dashboard__user-info">
+                <span className="project-dashboard__welcome">
+                  欢迎, {user?.username}
+                </span>
+                <Badge variant={isAdmin() ? 'danger' : 'primary'} size="sm">
+                  {isAdmin() ? '管理员' : '普通用户'}
+                </Badge>
+              </div>
+              <div className="project-dashboard__connection-status">
+                <span className="project-dashboard__connection-label">API:</span>
+                {getConnectionStatus()}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={logout}
+              >
+                退出登录
+              </Button>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={logout}
-            >
-              退出登录
-            </Button>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
       <main className="project-dashboard__main">
         <div className="project-dashboard__content">

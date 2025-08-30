@@ -6,29 +6,56 @@ class AuthService {
     this.user = JSON.parse(localStorage.getItem('user') || 'null');
   }
 
-  async login(username, password) {
+  async login(username, password, twoFactorCode = null) {
     try {
+      const requestBody = { username, password };
+      if (twoFactorCode) {
+        requestBody.totp_code = twoFactorCode;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(requestBody),
       });
 
       const data = await response.json();
       
-      if (data.status !== 'success') {
-        throw new Error(data.message || '登录失败');
-      }
-      
-      this.token = data.data.token;
-      this.user = data.data.user;
-      
-      localStorage.setItem('token', this.token);
-      localStorage.setItem('user', JSON.stringify(this.user));
+      if (data.status === 'success') {
+        this.token = data.data.token;
+        this.user = data.data.user;
+        
+        localStorage.setItem('token', this.token);
+        localStorage.setItem('user', JSON.stringify(this.user));
 
-      return { success: true, user: this.user };
+        return { success: true, user: this.user };
+      } else {
+        // 检查错误信息判断是否需要2FA
+        const errorMsg = data.message || '登录失败';
+        
+        if (errorMsg.includes('2FA验证码') || errorMsg.includes('需要提供验证码') || errorMsg.includes('管理员账户需要提供2FA验证码') || errorMsg.includes('账户已启用2FA')) {
+          return { 
+            success: false, 
+            requiresTwoFactor: true,
+            error: '需要2FA验证码'
+          };
+        }
+        
+        if (errorMsg.includes('需要设置2FA') || errorMsg.includes('未设置2FA')) {
+          return { 
+            success: false, 
+            needsSetup: true,
+            error: '需要设置2FA'
+          };
+        }
+        
+        return { 
+          success: false, 
+          error: errorMsg
+        };
+      }
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -162,6 +189,30 @@ class AuthService {
       }
 
       return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getCurrentUser() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/me`, {
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+        },
+      });
+
+      const data = await response.json();
+      
+      if (data.status !== 'success') {
+        throw new Error(data.message || '获取用户信息失败');
+      }
+
+      // 更新本地用户信息
+      this.user = data.data;
+      localStorage.setItem('user', JSON.stringify(this.user));
+
+      return data.data;
     } catch (error) {
       throw error;
     }

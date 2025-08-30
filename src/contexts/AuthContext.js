@@ -33,16 +33,21 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  const login = async (username, password) => {
+  const login = async (username, password, twoFactorCode = null) => {
     setIsLoading(true);
     try {
-      const result = await authService.login(username, password);
+      const result = await authService.login(username, password, twoFactorCode);
       if (result.success) {
         setUser(result.user);
         setIsAuthenticated(true);
         return { success: true };
       } else {
-        return { success: false, error: result.error };
+        return { 
+          success: false, 
+          error: result.error,
+          requiresTwoFactor: result.requiresTwoFactor,
+          needsSetup: result.needsSetup
+        };
       }
     } catch (error) {
       return { success: false, error: error.message };

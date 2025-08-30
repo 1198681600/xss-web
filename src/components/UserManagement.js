@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Card, Badge } from './ui';
 import { useAuth } from '../contexts/AuthContext';
+import TwoFactorManagement from './TwoFactorManagement';
 import './UserManagement.css';
 
 const UserManagement = () => {
@@ -78,8 +79,11 @@ const UserManagement = () => {
     }));
   };
 
+
   return (
     <div className="user-management">
+      <TwoFactorManagement />
+      
       <div className="user-management__header">
         <h2 className="user-management__title">👤 用户管理</h2>
         <Button
