@@ -13,7 +13,8 @@ const UserManagement = () => {
     role: 'user'
   });
   const [error, setError] = useState('');
-  const { authService } = useAuth();
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const { authService, user: currentUser } = useAuth();
 
   const loadUsers = async () => {
     setIsLoading(true);
@@ -48,6 +49,25 @@ const UserManagement = () => {
     } catch (error) {
       setError(error.message);
     }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    setError('');
+    try {
+      await authService.deleteUser(userId);
+      setDeleteConfirm(null);
+      await loadUsers();
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const confirmDelete = (user) => {
+    setDeleteConfirm(user);
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirm(null);
   };
 
   const handleInputChange = (e) => {
@@ -137,23 +157,36 @@ const UserManagement = () => {
           <div className="user-management__users">
             {users.map((user) => (
               <div key={user.id} className="user-management__user-item">
-                <div className="user-management__user-info">
-                  <span className="user-management__username">{user.username}</span>
-                  <Badge
-                    variant={user.role === 'admin' ? 'danger' : 'primary'}
-                    size="sm"
-                  >
-                    {user.role === 'admin' ? '管理员' : '普通用户'}
-                  </Badge>
-                </div>
-                <div className="user-management__user-meta">
-                  <span className="user-management__create-time">
-                    创建时间: {new Date(user.createdAt).toLocaleString()}
-                  </span>
-                  {user.lastLogin && (
-                    <span className="user-management__last-login">
-                      最后登录: {new Date(user.lastLogin).toLocaleString()}
+                <div className="user-management__user-content">
+                  <div className="user-management__user-info">
+                    <span className="user-management__username">{user.username}</span>
+                    <Badge
+                      variant={user.role === 'admin' ? 'danger' : 'primary'}
+                      size="sm"
+                    >
+                      {user.role === 'admin' ? '管理员' : '普通用户'}
+                    </Badge>
+                  </div>
+                  <div className="user-management__user-meta">
+                    <span className="user-management__create-time">
+                      创建时间: {new Date(user.created_at).toLocaleString()}
                     </span>
+                    {user.updated_at && (
+                      <span className="user-management__last-login">
+                        更新时间: {new Date(user.updated_at).toLocaleString()}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="user-management__user-actions">
+                  {user.id !== currentUser?.id && (
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => confirmDelete(user)}
+                    >
+                      删除
+                    </Button>
                   )}
                 </div>
               </div>
@@ -161,6 +194,36 @@ const UserManagement = () => {
           </div>
         )}
       </Card>
+
+      {deleteConfirm && (
+        <div className="user-management__modal-overlay">
+          <Card className="user-management__modal">
+            <div className="user-management__modal-header">
+              <h3>⚠️ 确认删除用户</h3>
+            </div>
+            <div className="user-management__modal-content">
+              <p>确定要删除用户 <strong>{deleteConfirm.username}</strong> 吗？</p>
+              <p className="user-management__modal-warning">
+                此操作无法撤销！
+              </p>
+            </div>
+            <div className="user-management__modal-actions">
+              <Button
+                variant="danger"
+                onClick={() => handleDeleteUser(deleteConfirm.id)}
+              >
+                确认删除
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={cancelDelete}
+              >
+                取消
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

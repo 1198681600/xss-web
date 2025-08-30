@@ -141,6 +141,31 @@ class AuthService {
       throw error;
     }
   }
+
+  async deleteUser(userId) {
+    if (!this.isAdmin()) {
+      throw new Error('只有管理员可以删除用户');
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+        },
+      });
+
+      const data = await response.json();
+      
+      if (data.status !== 'success') {
+        throw new Error(data.message || '删除用户失败');
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default new AuthService();
