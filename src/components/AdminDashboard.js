@@ -6,13 +6,15 @@ import CommandPanel from './CommandPanel';
 import ResultDisplay from './ResultDisplay';
 import PayloadGenerator from './PayloadGenerator';
 import UserManagement from './UserManagement';
+import ProjectDashboard from './ProjectDashboard';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [selectedClient, setSelectedClient] = useState(null);
   const [commandResults, setCommandResults] = useState([]);
-  const [activeTab, setActiveTab] = useState('clients');
+  const [activeTab, setActiveTab] = useState('projects');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [selectedProject, setSelectedProject] = useState(null);
   const { logout, user } = useAuth();
 
   const handleSelectClient = (client) => {
@@ -39,6 +41,7 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
+    { id: 'projects', name: '项目管理', icon: '📁' },
     { id: 'clients', name: '客户端管理', icon: '👥' },
     { id: 'command', name: '命令面板', icon: '⚡' },
     { id: 'results', name: '执行结果', icon: '📊', badge: commandResults.length > 0 ? commandResults.length : null },
@@ -119,22 +122,50 @@ const AdminDashboard = () => {
 
       <main className="admin-dashboard__main">
         <div className="admin-dashboard__content">
+          {activeTab === 'projects' && (
+            <div className="admin-dashboard__tab-content">
+              <ProjectDashboard onProjectSelect={setSelectedProject} />
+            </div>
+          )}
+
           {activeTab === 'clients' && (
             <div className="admin-dashboard__tab-content">
-              <ClientList
-                onSelectClient={handleSelectClient}
-                selectedClientId={selectedClient?.id}
-                refreshTrigger={refreshTrigger}
-              />
+              {!selectedProject ? (
+                <div className="admin-dashboard__project-required">
+                  <h3>请先选择项目</h3>
+                  <p>在"项目管理"中选择一个项目后，才能查看该项目的客户端</p>
+                  <Button onClick={() => setActiveTab('projects')}>
+                    前往项目管理
+                  </Button>
+                </div>
+              ) : (
+                <ClientList
+                  onSelectClient={handleSelectClient}
+                  selectedClientId={selectedClient?.id}
+                  refreshTrigger={refreshTrigger}
+                  projectId={selectedProject.id}
+                />
+              )}
             </div>
           )}
 
           {activeTab === 'command' && (
             <div className="admin-dashboard__tab-content">
-              <CommandPanel
-                selectedClient={selectedClient}
-                onCommandResult={handleCommandResult}
-              />
+              {!selectedProject ? (
+                <div className="admin-dashboard__project-required">
+                  <h3>请先选择项目</h3>
+                  <p>在"项目管理"中选择一个项目后，才能执行命令</p>
+                  <Button onClick={() => setActiveTab('projects')}>
+                    前往项目管理
+                  </Button>
+                </div>
+              ) : (
+                <CommandPanel
+                  selectedClient={selectedClient}
+                  onCommandResult={handleCommandResult}
+                  projectId={selectedProject.id}
+                />
+              )}
             </div>
           )}
 
@@ -149,7 +180,17 @@ const AdminDashboard = () => {
 
           {activeTab === 'payload' && (
             <div className="admin-dashboard__tab-content">
-              <PayloadGenerator />
+              {!selectedProject ? (
+                <div className="admin-dashboard__project-required">
+                  <h3>请先选择项目</h3>
+                  <p>在"项目管理"中选择一个项目后，才能生成该项目的载荷</p>
+                  <Button onClick={() => setActiveTab('projects')}>
+                    前往项目管理
+                  </Button>
+                </div>
+              ) : (
+                <PayloadGenerator projectId={selectedProject.id} />
+              )}
             </div>
           )}
 

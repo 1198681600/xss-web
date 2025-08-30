@@ -4,7 +4,7 @@ import { useApi } from '../hooks/useApi';
 import { COMMAND_TYPES } from '../types';
 import './CommandPanel.css';
 
-const CommandPanel = ({ selectedClient, onCommandResult }) => {
+const CommandPanel = ({ selectedClient, onCommandResult, projectId }) => {
   const [selectedCommand, setSelectedCommand] = useState('');
   const [customCode, setCustomCode] = useState('');
   const [domSelector, setDomSelector] = useState('');
@@ -46,9 +46,9 @@ const CommandPanel = ({ selectedClient, onCommandResult }) => {
       let result;
 
       if (selectedClient) {
-        result = await sendCommandToTarget(selectedClient.id, selectedCommand, args);
+        result = await sendCommandToTarget(selectedClient.id, selectedCommand, args, projectId);
       } else {
-        result = await sendCommandToAll(selectedCommand, args);
+        result = await sendCommandToAll(selectedCommand, args, projectId);
       }
 
       if (result.status === 'success' && onCommandResult) {

@@ -20,24 +20,24 @@ export const useApi = () => {
     }
   }, []);
 
-  const getAllClients = useCallback(() => {
-    return execute(apiService.getAllClients.bind(apiService));
+  const getAllClients = useCallback((projectId) => {
+    return execute(apiService.getAllClients.bind(apiService), projectId);
   }, [execute]);
 
   const getClient = useCallback((clientId) => {
     return execute(apiService.getClient.bind(apiService), clientId);
   }, [execute]);
 
-  const sendCommandToAll = useCallback((command, args) => {
-    return execute(apiService.sendCommandToAll.bind(apiService), command, args);
+  const sendCommandToAll = useCallback((command, args, projectId) => {
+    return execute(apiService.sendCommandToAll.bind(apiService), command, args, projectId);
   }, [execute]);
 
-  const sendCommandToTarget = useCallback((targetId, command, args) => {
-    return execute(apiService.sendCommandToTarget.bind(apiService), targetId, command, args);
+  const sendCommandToTarget = useCallback((targetId, command, args, projectId) => {
+    return execute(apiService.sendCommandToTarget.bind(apiService), targetId, command, args, projectId);
   }, [execute]);
 
-  const sendCommandToClient = useCallback((clientId, command, args) => {
-    return execute(apiService.sendCommandToClient.bind(apiService), clientId, command, args);
+  const sendCommandToClient = useCallback((clientId, command, args, projectId) => {
+    return execute(apiService.sendCommandToClient.bind(apiService), clientId, command, args, projectId);
   }, [execute]);
 
   return {

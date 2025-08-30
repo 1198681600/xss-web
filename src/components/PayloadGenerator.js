@@ -3,15 +3,16 @@ import { Card, Button, Input, Badge } from './ui';
 import ApiService from '../services/api';
 import './PayloadGenerator.css';
 
-const PayloadGenerator = () => {
+const PayloadGenerator = ({ projectId }) => {
   const [customId, setCustomId] = useState('');
   const [copied, setCopied] = useState('');
 
-  const payloadUrl = ApiService.getPayloadUrl();
+  const payloadUrl = ApiService.getPayloadUrl(projectId);
 
   const generatePayloads = () => {
+    const separator = payloadUrl.includes('?') ? '&' : '?';
     const baseUrl = customId 
-      ? `${payloadUrl}?id=${encodeURIComponent(customId)}`
+      ? `${payloadUrl}${separator}id=${encodeURIComponent(customId)}`
       : payloadUrl;
 
     return {

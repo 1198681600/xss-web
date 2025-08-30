@@ -17,14 +17,11 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const initAuth = async () => {
+    const initAuth = () => {
       try {
         if (authService.isAuthenticated()) {
-          const isValid = await authService.verifyToken();
-          if (isValid) {
-            setUser(authService.getUser());
-            setIsAuthenticated(true);
-          }
+          setUser(authService.getUser());
+          setIsAuthenticated(true);
         }
       } catch (error) {
         console.error('Auth initialization error:', error);

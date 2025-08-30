@@ -5,13 +5,13 @@ import { formatTimestamp, formatClientId } from '../utils/format';
 import { CLIENT_STATUS } from '../types';
 import './ClientList.css';
 
-const ClientList = ({ onSelectClient, selectedClientId, refreshTrigger, readonly = false }) => {
+const ClientList = ({ onSelectClient, selectedClientId, refreshTrigger, readonly = false, projectId }) => {
   const [clients, setClients] = useState([]);
   const { getAllClients, loading } = useApi();
 
   const fetchClients = async () => {
     try {
-      const response = await getAllClients();
+      const response = await getAllClients(projectId);
       if (response.status === 'success') {
         setClients(response.data || []);
       }
@@ -22,8 +22,10 @@ const ClientList = ({ onSelectClient, selectedClientId, refreshTrigger, readonly
   };
 
   useEffect(() => {
-    fetchClients();
-  }, [refreshTrigger, getAllClients]);
+    if (projectId) {
+      fetchClients();
+    }
+  }, [refreshTrigger, getAllClients, projectId]);
 
   const getStatusBadge = (status) => {
     const statusMap = {

@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import LoginPage from './components/LoginPage';
 import AdminDashboard from './components/AdminDashboard';
-import UserDashboard from './components/UserDashboard';
+import ProjectDashboard from './components/ProjectDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Loading } from './components/ui';
 import './App.css';
@@ -40,7 +40,7 @@ function App() {
         path="/" 
         element={
           <ProtectedRoute>
-            {isAdmin() ? <AdminDashboard /> : <UserDashboard />}
+            {isAdmin() ? <AdminDashboard /> : <ProjectDashboard />}
           </ProtectedRoute>
         } 
       />

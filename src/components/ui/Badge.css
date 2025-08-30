@@ -72,6 +72,12 @@
 }
 
 /* Sizes */
+.badge--xs {
+  padding: 0.15rem 0.4rem;
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
 .badge--sm {
   padding: var(--space-1) var(--space-2);
   font-size: 0.75rem;
