@@ -5,7 +5,7 @@ import { formatTimestamp, formatClientId } from '../utils/format';
 import { CLIENT_STATUS } from '../types';
 import './ClientList.css';
 
-const ClientList = ({ onSelectClient, selectedClientId, refreshTrigger }) => {
+const ClientList = ({ onSelectClient, selectedClientId, refreshTrigger, readonly = false }) => {
   const [clients, setClients] = useState([]);
   const { getAllClients, loading } = useApi();
 
@@ -87,7 +87,8 @@ const ClientList = ({ onSelectClient, selectedClientId, refreshTrigger }) => {
               className={`client-card ${
                 selectedClientId === client.id ? 'client-card--selected' : ''
               }`}
-              onClick={() => onSelectClient(client)}
+              onClick={() => !readonly && onSelectClient(client)}
+              style={{ cursor: readonly ? 'default' : 'pointer' }}
             >
               <div className="client-card__header">
                 <div className="client-card__id">

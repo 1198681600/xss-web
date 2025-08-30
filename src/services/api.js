@@ -1,4 +1,5 @@
 import { API_BASE_URL, API_ENDPOINTS } from '../constants/api';
+import authService from './auth';
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -11,12 +12,25 @@ class ApiService {
       ...options,
     };
 
+    // 自动添加认证头
+    const token = authService.getToken();
+    if (token && !options.skipAuth) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+
     try {
       const response = await fetch(url, config);
       const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+      // 处理401认证失败
+      if (response.status === 401) {
+        authService.logout();
+        window.location.href = '/login';
+        throw new Error('认证失败，请重新登录');
+      }
+      
+      if (data.status !== 'success') {
+        throw new Error(data.message || `请求失败: ${response.status}`);
       }
       
       return data;
