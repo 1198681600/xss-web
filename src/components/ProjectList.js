@@ -113,7 +113,7 @@ const ProjectList = ({ onSelectProject, selectedProjectId, refreshTrigger, onCre
         <Card className="project-list__empty">
           <div className="project-list__empty-content">
             <h3>📂 暂无项目</h3>
-            <p>点击"新建项目"开始创建您的第一个XSS测试项目</p>
+            <p>点击"新建项目"开始创建您的第一个播放器项目</p>
           </div>
         </Card>
       ) : (

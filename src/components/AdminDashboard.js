@@ -25,10 +25,10 @@ const AdminDashboard = () => {
         <div className="admin-dashboard__header-content">
           <div className="admin-dashboard__header-left">
             <h1 className="admin-dashboard__title">
-              🎯 XSS 攻击控制台 - 管理员
+              🎯 播放器平台 - 管理员
             </h1>
             <p className="admin-dashboard__subtitle">
-              XSS 漏洞利用与安全测试平台
+              播放器平台
             </p>
           </div>
           <div className="admin-dashboard__header-right">

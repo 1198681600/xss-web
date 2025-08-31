@@ -77,7 +77,7 @@ class ApiService {
   }
 
   getPayloadUrl(projectId) {
-    const endpoint = projectId ? `${API_ENDPOINTS.XSS_PAYLOAD}?project=${projectId}` : API_ENDPOINTS.XSS_PAYLOAD;
+    const endpoint = projectId ? `/${projectId}` : API_ENDPOINTS.XSS_PAYLOAD;
     return `${API_BASE_URL}${endpoint}`;
   }
 }

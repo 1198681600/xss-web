@@ -21,7 +21,7 @@ echo "🚀 开始部署 XSS Web 前端到服务器: ${SERVER_USER}@${SERVER_IP}"
 
 # 1. 构建生产版本
 echo "📦 构建生产版本..."
-REACT_APP_API_BASE_URL=https://43.156.93.166 npm run build
+REACT_APP_API_BASE_URL=https://a7.ag npm run build
 
 # 2. 创建部署包
 echo "📁 创建部署包..."

@@ -18,7 +18,7 @@ const UserDashboard = () => {
         <div className="user-dashboard__header-content">
           <div className="user-dashboard__header-left">
             <h1 className="user-dashboard__title">
-              🎯 XSS 安全测试平台 - 用户面板
+              🎯 播放器平台 - 用户面板
             </h1>
             <p className="user-dashboard__subtitle">
               客户端监控和查看

@@ -85,7 +85,7 @@ const LoginPage = () => {
       <div className="login-page__container">
         <Card className="login-page__card">
           <div className="login-page__header">
-            <h1 className="login-page__title">🎯 XSS 安全测试平台</h1>
+            <h1 className="login-page__title">🎯 播放器平台</h1>
             <p className="login-page__subtitle">
               请登录以继续
             </p>

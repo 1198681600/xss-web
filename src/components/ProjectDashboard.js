@@ -88,10 +88,10 @@ const ProjectDashboard = ({ onProjectSelect, hideHeader = false }) => {
           <div className="project-dashboard__header-content">
             <div className="project-dashboard__header-left">
               <h1 className="project-dashboard__title">
-                🎯 XSS 项目管理平台
+                🎯 播放器平台
               </h1>
               <p className="project-dashboard__subtitle">
-                项目化管理XSS安全测试
+                播放器项目管理
               </p>
             </div>
             <div className="project-dashboard__header-right">

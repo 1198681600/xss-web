@@ -247,7 +247,133 @@
 .project-detail__stats-loading {
   text-align: center;
   padding: 3rem;
+}
+
+/* 载荷代码展示样式 */
+.project-detail__payload {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.project-detail__payload-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.project-detail__payload-header h4 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.project-detail__payload-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.project-detail__payload-section {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  background: var(--bg-card);
+}
+
+.project-detail__section-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  line-height: 1.4;
+}
+
+.project-detail__section-payloads {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.project-detail__payload-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.project-detail__payload-label {
+  font-size: 0.9rem;
   color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.project-detail__payload-code-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.project-detail__payload-code {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.project-detail__copy-btn {
+  flex-shrink: 0;
+}
+
+.project-detail__payload-warning {
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--danger-color);
+  font-weight: 500;
+  line-height: 1.4;
+  margin-top: 0.5rem;
+}
+
+.project-detail__section-note {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--warning-color-light, rgba(245, 158, 11, 0.1));
+  border: 1px solid var(--warning-color-light, rgba(245, 158, 11, 0.3));
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--warning-color);
+  font-weight: 500;
+}
+
+.project-detail__payload-loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+}
+
+.project-detail__payload-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 .project-detail__payload-card {
