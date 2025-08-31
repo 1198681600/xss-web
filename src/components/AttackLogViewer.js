@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Badge, Card } from './ui';
 import attackLogService from '../services/attackLog';
+import { formatTimestamp } from '../utils/format';
 import { toast } from './Toast';
 import './AttackLogViewer.css';
 
@@ -142,7 +143,9 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
                 <div className="attack-log-viewer__map-value">
                   {specialFields.includes(key) ? 
                     renderSpecialField(key, value) : 
-                    <span className="attack-log-viewer__map-simple-value">{value}</span>
+                    key === 'timestamp' ?
+                      <span className="attack-log-viewer__map-simple-value">{formatTimestamp(value)}</span> :
+                      <span className="attack-log-viewer__map-simple-value">{value}</span>
                   }
                 </div>
               </div>
