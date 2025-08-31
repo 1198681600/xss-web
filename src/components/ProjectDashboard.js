@@ -142,6 +142,8 @@ const ProjectDashboard = ({ onProjectSelect, hideHeader = false }) => {
               selectedProjectId={selectedProject?.id}
               refreshTrigger={refreshTrigger}
               onCreateProject={handleCreateProject}
+              onEditProject={handleEditProject}
+              onDeleteProject={handleDeleteProject}
             />
           )}
         </div>

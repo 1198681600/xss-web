@@ -180,9 +180,8 @@
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--text-primary);
-  background-color: var(--bg-dark);
-  color: #e2e8f0;
+  background-color: #1a1a1a;
+  color: #f0f0f0;
   padding: var(--space-4);
   border-radius: var(--radius-md);
   overflow-x: auto;

@@ -84,7 +84,10 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
       forms: { variant: 'primary', text: '表单' },
       userAgent: { variant: 'info', text: 'UA' },
       dom: { variant: 'success', text: 'DOM' },
-      eval: { variant: 'danger', text: 'JS执行' }
+      eval: { variant: 'danger', text: 'JS执行' },
+      xhr: { variant: 'primary', text: 'HTTP请求' },
+      screenshot: { variant: 'success', text: '截图' },
+      html: { variant: 'info', text: 'HTML' }
     };
 
     const commandInfo = commandMap[command] || { variant: 'default', text: command };

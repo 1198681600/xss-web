@@ -57,8 +57,8 @@
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.5;
-  background-color: var(--bg-card);
-  color: var(--text-primary);
+  background-color: #1a1a1a;
+  color: #f0f0f0;
   resize: vertical;
   min-height: 80px;
   transition: border-color 0.15s ease-in-out;

@@ -17,7 +17,10 @@ export const COMMAND_TYPES = {
   SESSION_STORAGE: 'sessionStorage',
   DOM: 'dom',
   FORMS: 'forms',
-  USER_AGENT: 'userAgent'
+  USER_AGENT: 'userAgent',
+  XHR: 'xhr',
+  SCREENSHOT: 'screenshot',
+  HTML: 'html'
 };
 
 export const MESSAGE_TYPES = {

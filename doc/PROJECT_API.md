@@ -12,15 +12,29 @@ Authorization: Bearer <token>
   "name": "测试项目1",
   "description": "项目描述信息",
   "target_url": "https://example.com",
-  "group": "生产环境",
-  "enabled_modules": ["cookie", "localStorage", "forms", "eval"]
+  "enabled_modules": ["cookie", "localStorage", "xhr", "screenshot", "html"],
+  "module_configs": [
+    {
+      "module": "xhr",
+      "args": {
+        "method": "GET",
+        "url": "http://localhost:63342/xss-backend/test.html?_ijt=3k22s5pq73as0nuhkfc0bkdcno&_ij_reload=RELOAD_ON_SAVE"
+      }
+    },
+    {
+      "module": "eval",
+      "args": {
+        "code": "document.title"
+      }
+    }
+  ]
 }
 ```
 - `name` (string): 项目名称，必须唯一
 - `description` (string): 项目描述信息
 - `target_url` (string): 目标URL地址
-- `group` (string): 项目分组名称
 - `enabled_modules` (array): 启用的XSS攻击模块列表
+- `module_configs` (array): 模块配置列表，为需要参数的模块设置执行参数
 
 **响应体:**
 ```json
@@ -35,7 +49,16 @@ Authorization: Bearer <token>
     "target_url": "https://example.com",
     "group": "生产环境",
     "status": "active",
-    "enabled_modules": ["cookie", "localStorage", "forms", "eval"],
+    "enabled_modules": ["cookie", "localStorage", "xhr", "screenshot", "html"],
+    "module_configs": [
+      {
+        "module": "xhr",
+        "args": {
+          "method": "GET",
+          "url": "http://localhost:63342/xss-backend/test.html"
+        }
+      }
+    ],
     "owner_id": 1,
     "created_at": "2025-08-30T14:00:00Z",
     "updated_at": "2025-08-30T14:00:00Z"
@@ -337,6 +360,24 @@ Authorization: Bearer <token>
       "display_name": "弹窗提示",
       "description": "显示弹窗消息",
       "category": "界面操作"
+    },
+    {
+      "name": "xhr",
+      "display_name": "HTTP请求",
+      "description": "发送XMLHttpRequest请求（GET/POST等），包含请求URL信息",
+      "category": "网络请求"
+    },
+    {
+      "name": "screenshot",
+      "display_name": "页面截图",
+      "description": "截取当前页面截图（需要html2canvas库或浏览器支持）",
+      "category": "界面操作"
+    },
+    {
+      "name": "html",
+      "display_name": "HTML内容",
+      "description": "获取当前页面完整HTML内容",
+      "category": "信息收集"
     }
   ]
 }
@@ -355,10 +396,24 @@ Authorization: Bearer <token>
 **请求体:**
 ```json
 {
-  "enabled_modules": ["cookie", "localStorage", "eval", "alert"]
+  "enabled_modules": ["cookie", "localStorage", "xhr", "screenshot"],
+  "module_configs": [
+    {
+      "module": "xhr",
+      "args": {
+        "method": "POST",
+        "url": "http://api.target.com/login",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "data": "{\"username\":\"test\"}"
+      }
+    }
+  ]
 }
 ```
 - `enabled_modules` (array): 要启用的攻击模块名称列表
+- `module_configs` (array): 模块配置列表，为需要参数的模块设置执行参数
 
 **响应体:**
 ```json

@@ -141,6 +141,12 @@
   gap: 0.75rem;
 }
 
+.project-form__module-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .project-form__module-item {
   display: flex;
   align-items: flex-start;
@@ -230,4 +236,67 @@
   .project-form__module-item {
     padding: 0.75rem;
   }
+}
+
+/* Module configuration styles */
+.project-form__module-config-wrapper {
+  margin-top: 0.75rem;
+  margin-left: 1.75rem;
+}
+
+.project-form__module-config {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.project-form__module-config h5 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.project-form__config-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.project-form__config-row:last-child {
+  margin-bottom: 0;
+}
+
+.project-form__config-row label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.project-form__config-row input,
+.project-form__config-row textarea,
+.project-form__config-row select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.project-form__config-row textarea {
+  resize: vertical;
+  font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.project-form__config-row input:focus,
+.project-form__config-row textarea:focus,
+.project-form__config-row select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px rgba(var(--primary-color-rgb), 0.1);
 }

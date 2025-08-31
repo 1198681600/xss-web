@@ -3,7 +3,7 @@ import { Card, Badge, Button, Loading } from './ui';
 import projectService from '../services/project';
 import './ProjectList.css';
 
-const ProjectList = ({ onSelectProject, selectedProjectId, refreshTrigger, onCreateProject }) => {
+const ProjectList = ({ onSelectProject, selectedProjectId, refreshTrigger, onCreateProject, onEditProject, onDeleteProject }) => {
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -53,6 +53,18 @@ const ProjectList = ({ onSelectProject, selectedProjectId, refreshTrigger, onCre
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const handleEditProject = (project) => {
+    if (onEditProject) {
+      onEditProject(project);
+    }
+  };
+
+  const handleDeleteProject = (project) => {
+    if (onDeleteProject) {
+      onDeleteProject(project);
+    }
   };
 
   if (isLoading) {
@@ -171,6 +183,31 @@ const ProjectList = ({ onSelectProject, selectedProjectId, refreshTrigger, onCre
                     )}
                   </div>
                 </div>
+              </div>
+
+              <div className="project-list__card-actions">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditProject(project);
+                  }}
+                  className="project-list__action-btn"
+                >
+                  ✏️ 编辑
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteProject(project);
+                  }}
+                  className="project-list__action-btn"
+                >
+                  🗑️ 删除
+                </Button>
               </div>
             </Card>
           ))}
