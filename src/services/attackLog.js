@@ -63,8 +63,25 @@ class AttackLogService {
     
     try {
       const parsed = JSON.parse(result);
+      
+      // 如果包含屏幕截图，创建简化版本显示
+      if (parsed.screenshot && typeof parsed.screenshot === 'string' && parsed.screenshot.startsWith('data:image/')) {
+        const simplifiedResult = { ...parsed };
+        simplifiedResult.screenshot = `[图片数据 - ${Math.round(parsed.screenshot.length / 1024)}KB]`;
+        return JSON.stringify(simplifiedResult, null, 2);
+      }
+      
       return JSON.stringify(parsed, null, 2);
     } catch {
+      // 检查是否是Go map格式且包含screenshot
+      const screenshotMatch = result.match(/screenshot:(data:image\/[^;]+;base64,[^\s\]]+)/);
+      if (screenshotMatch) {
+        const screenshotData = screenshotMatch[1];
+        const screenshotSize = Math.round(screenshotData.length / 1024);
+        // 替换screenshot数据为简化信息
+        return result.replace(screenshotMatch[0], `screenshot:[图片数据 - ${screenshotSize}KB]`);
+      }
+      
       return result;
     }
   }

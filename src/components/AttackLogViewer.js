@@ -59,6 +59,78 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
     });
   };
 
+  const renderScreenshot = (result) => {
+    if (!result) return null;
+    
+    try {
+      // 首先尝试解析JSON格式
+      const parsed = JSON.parse(result);
+      if (parsed.screenshot && typeof parsed.screenshot === 'string' && parsed.screenshot.startsWith('data:image/')) {
+        return (
+          <div className="attack-log-viewer__screenshot-section">
+            <label className="attack-log-viewer__detail-label">屏幕截图:</label>
+            <div className="attack-log-viewer__screenshot-container">
+              <img 
+                src={parsed.screenshot} 
+                alt={`屏幕截图 - ${parsed.pageTitle || '未知页面'}`}
+                className="attack-log-viewer__screenshot"
+                onClick={() => window.open(parsed.screenshot, '_blank')}
+                title="点击查看大图"
+              />
+              {parsed.pageTitle && (
+                <div className="attack-log-viewer__screenshot-info">
+                  <span>📄 页面标题: {parsed.pageTitle}</span>
+                  {parsed.width && parsed.height && (
+                    <span>📐 尺寸: {parsed.width} × {parsed.height}</span>
+                  )}
+                  {parsed.executionTime && (
+                    <span>⏱️ 截图时间: {new Date(parsed.executionTime).toLocaleString('zh-CN')}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+    } catch (e) {
+      // 如果不是JSON，尝试解析Go的map格式
+      const screenshotMatch = result.match(/screenshot:(data:image\/[^;]+;base64,[^\s\]]+)/);
+      if (screenshotMatch) {
+        const screenshotData = screenshotMatch[1];
+        const pageTitleMatch = result.match(/pageTitle:([^\s\]]+)/);
+        const pageTitle = pageTitleMatch ? pageTitleMatch[1] : '未知页面';
+        const widthMatch = result.match(/width:(\d+)/);
+        const heightMatch = result.match(/height:(\d+)/);
+        const executionTimeMatch = result.match(/executionTime:([^\s\]]+)/);
+        
+        return (
+          <div className="attack-log-viewer__screenshot-section">
+            <label className="attack-log-viewer__detail-label">屏幕截图:</label>
+            <div className="attack-log-viewer__screenshot-container">
+              <img 
+                src={screenshotData} 
+                alt={`屏幕截图 - ${pageTitle}`}
+                className="attack-log-viewer__screenshot"
+                onClick={() => window.open(screenshotData, '_blank')}
+                title="点击查看大图"
+              />
+              <div className="attack-log-viewer__screenshot-info">
+                <span>📄 页面标题: {pageTitle}</span>
+                {widthMatch && heightMatch && (
+                  <span>📐 尺寸: {widthMatch[1]} × {heightMatch[1]}</span>
+                )}
+                {executionTimeMatch && (
+                  <span>⏱️ 截图时间: {new Date(executionTimeMatch[1]).toLocaleString('zh-CN')}</span>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      }
+    }
+    return null;
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -248,6 +320,8 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
                       </div>
                     )}
 
+                    {renderScreenshot(log.result)}
+                    
                     <div className="attack-log-viewer__detail-section">
                       <label className="attack-log-viewer__detail-label">执行结果:</label>
                       <div className="attack-log-viewer__detail-value">

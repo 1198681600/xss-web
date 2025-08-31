@@ -113,15 +113,10 @@
     160px     /* JID */
     120px     /* IP */
     100px     /* 浏览器 */
-    200px     /* URL */
     70px      /* 状态 */
-    100px     /* 分组 */
-    100px     /* 备注 */
     100px     /* 首次上线 */
     100px     /* 上线时间 */
-    60px      /* 连接 */
-    120px     /* Cookie */
-    100px;    /* 事件类型 */
+    60px;     /* 连接 */
   gap: 1rem;
   padding: 0.75rem 1rem;
   align-items: center;
@@ -160,10 +155,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.session-list__cookie-info {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
 
 .session-list__cell {
   font-size: 0.85rem;
@@ -175,8 +166,7 @@
 
 .session-list__cell--jid,
 .session-list__cell--status,
-.session-list__cell--count,
-.session-list__cell--cookie {
+.session-list__cell--count {
   display: flex;
   justify-content: center;
 }
@@ -265,16 +255,10 @@
       140px     /* JID */
       100px     /* IP */
       80px      /* 浏览器 */
-      150px     /* URL */
       60px      /* 状态 */
-      80px      /* 分组 */
-      80px      /* 备注 */
       80px      /* 首次上线 */
       80px      /* 上线时间 */
-      50px      /* 连接 */
-      100px     /* Cookie */
-      70px      /* 事件类型 */
-      80px;     /* 操作 */
+      50px;     /* 连接 */
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
   }

@@ -152,7 +152,6 @@ const SessionList = ({ projectId, refreshTrigger }) => {
               <div className="session-list__cell session-list__cell--time">首次上线</div>
               <div className="session-list__cell session-list__cell--last">上线时间</div>
               <div className="session-list__cell session-list__cell--count">连接</div>
-              <div className="session-list__cell session-list__cell--cookie">Cookie</div>
             </div>
           </div>
           
@@ -197,11 +196,6 @@ const SessionList = ({ projectId, refreshTrigger }) => {
                   <Badge variant="outline" size="sm">
                     {session.connection_count}
                   </Badge>
-                </div>
-                <div className="session-list__cell session-list__cell--cookie">
-                  <span className="session-list__cookie-info" title={session.cookie}>
-                    {session.cookie ? `(${session.cookie.length}字符)` : '无'}
-                  </span>
                 </div>
               </div>
             ))}
