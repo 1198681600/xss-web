@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Badge, Button } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import TwoFactorManagement from './TwoFactorManagement';
+import PasswordChange from './PasswordChange';
 import { toast } from './Toast';
 import './UserProfile.css';
 
@@ -35,6 +36,7 @@ const UserProfile = () => {
 
   const tabs = [
     { id: 'profile', name: '基本信息', icon: '👤' },
+    { id: 'password', name: '修改密码', icon: '🔑' },
     { id: '2fa', name: '双因子认证', icon: '🔐' }
   ];
 
@@ -126,6 +128,10 @@ const UserProfile = () => {
                 </div>
               )}
             </Card>
+          )}
+
+          {activeTab === 'password' && (
+            <PasswordChange />
           )}
 
           {activeTab === '2fa' && (

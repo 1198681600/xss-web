@@ -130,6 +130,30 @@ Authorization: Bearer <token>
 - `data.created_at` (string): 创建时间
 - `data.updated_at` (string): 更新时间
 
+### 修改密码
+`PUT /api/me/password`
+Authorization: Bearer <token>
+
+**请求体:**
+```json
+{
+  "current_password": "currentpass123",
+  "new_password": "newpass456"
+}
+```
+- `current_password` (string): 当前密码
+- `new_password` (string): 新密码
+
+**响应体:**
+```json
+{
+  "status": "success",
+  "message": "密码修改成功"
+}
+```
+- `status` (string): 操作状态，成功为 "success"
+- `message` (string): 操作结果描述
+
 ### 创建用户 (仅管理员)
 `POST /api/users`
 Authorization: Bearer <token>

@@ -262,6 +262,32 @@ class AuthService {
       throw error;
     }
   }
+
+  async changePassword(currentPassword, newPassword) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/me/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.status !== 'success') {
+        throw new Error(data.message || '修改密码失败');
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 const authService = new AuthService();

@@ -3,6 +3,7 @@ import { Button, Badge } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import UserManagement from './UserManagement';
 import ProjectDashboard from './ProjectDashboard';
+import UserProfile from './UserProfile';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -16,7 +17,8 @@ const AdminDashboard = () => {
 
   const tabs = [
     { id: 'projects', name: '项目管理', icon: '📁' },
-    { id: 'users', name: '用户管理', icon: '👤' }
+    { id: 'users', name: '用户管理', icon: '👤' },
+    { id: 'profile', name: '个人设置', icon: '⚙️' }
   ];
 
   return (
@@ -102,6 +104,12 @@ const AdminDashboard = () => {
           {activeTab === 'users' && (
             <div className="admin-dashboard__tab-content">
               <UserManagement />
+            </div>
+          )}
+
+          {activeTab === 'profile' && (
+            <div className="admin-dashboard__tab-content">
+              <UserProfile />
             </div>
           )}
         </div>
