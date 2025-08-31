@@ -59,6 +59,168 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
     });
   };
 
+  const parseMapData = (mapString) => {
+    // 解析Go map格式的数据，例如：map[key1:value1 key2:value2]
+    const mapMatch = mapString.match(/map\[(.*?)\]$/);
+    if (!mapMatch) return null;
+    
+    const content = mapMatch[1];
+    const pairs = [];
+    let current = '';
+    let inBracket = 0;
+    let inQuote = false;
+    let quoteChar = '';
+    
+    for (let i = 0; i < content.length; i++) {
+      const char = content[i];
+      
+      if ((char === '"' || char === "'") && content[i-1] !== '\\') {
+        if (!inQuote) {
+          inQuote = true;
+          quoteChar = char;
+        } else if (char === quoteChar) {
+          inQuote = false;
+          quoteChar = '';
+        }
+      }
+      
+      if (!inQuote) {
+        if (char === '[' || char === '{') {
+          inBracket++;
+        } else if (char === ']' || char === '}') {
+          inBracket--;
+        }
+      }
+      
+      if (char === ' ' && !inQuote && inBracket === 0) {
+        if (current.trim()) {
+          pairs.push(current.trim());
+          current = '';
+        }
+      } else {
+        current += char;
+      }
+    }
+    
+    if (current.trim()) {
+      pairs.push(current.trim());
+    }
+    
+    const result = {};
+    pairs.forEach(pair => {
+      const colonIndex = pair.indexOf(':');
+      if (colonIndex > 0) {
+        const key = pair.substring(0, colonIndex);
+        const value = pair.substring(colonIndex + 1);
+        result[key] = value;
+      }
+    });
+    
+    return result;
+  };
+
+  const renderMapData = (result) => {
+    const mapData = parseMapData(result);
+    if (!mapData) return null;
+    
+    // 特殊处理的字段
+    const specialFields = ['cookies', 'localStorage', 'sessionStorage'];
+    
+    return (
+      <div className="attack-log-viewer__map-section">
+        <label className="attack-log-viewer__detail-label">详细信息:</label>
+        <div className="attack-log-viewer__map-container">
+          {Object.entries(mapData).map(([key, value]) => {
+            // 跳过screenshot字段，已在上方单独显示
+            if (key === 'screenshot') return null;
+            
+            return (
+              <div key={key} className="attack-log-viewer__map-item">
+                <div className="attack-log-viewer__map-key">
+                  {getFieldDisplayName(key)}
+                </div>
+                <div className="attack-log-viewer__map-value">
+                  {specialFields.includes(key) ? 
+                    renderSpecialField(key, value) : 
+                    <span className="attack-log-viewer__map-simple-value">{value}</span>
+                  }
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const getFieldDisplayName = (key) => {
+    const fieldNames = {
+      'clientIP': '🌐 客户端IP',
+      'cookies': '🍪 Cookies',
+      'localStorage': '💾 本地存储',
+      'sessionStorage': '📦 会话存储', 
+      'origin': '🏠 来源',
+      'referrer': '🔗 引用页',
+      'timestamp': '⏰ 时间戳',
+      'url': '🌍 页面URL',
+      'userAgent': '🖥️ 用户代理',
+      'pageTitle': '📄 页面标题',
+      'width': '📏 宽度',
+      'height': '📏 高度',
+      'executionTime': '⚡ 执行时间'
+    };
+    return fieldNames[key] || key;
+  };
+
+  const renderSpecialField = (key, value) => {
+    if (key === 'cookies') {
+      try {
+        // 解析cookie字符串
+        const cookies = value.split(';').map(cookie => {
+          const [name, ...valueParts] = cookie.trim().split('=');
+          return { name: name.trim(), value: valueParts.join('=') };
+        });
+        
+        return (
+          <div className="attack-log-viewer__cookies">
+            {cookies.map((cookie, index) => (
+              <div key={index} className="attack-log-viewer__cookie-item">
+                <span className="attack-log-viewer__cookie-name">{cookie.name}</span>
+                <span className="attack-log-viewer__cookie-value">{cookie.value}</span>
+              </div>
+            ))}
+          </div>
+        );
+      } catch {
+        return <span className="attack-log-viewer__map-simple-value">{value}</span>;
+      }
+    }
+    
+    if (key === 'localStorage' || key === 'sessionStorage') {
+      try {
+        // 解析嵌套的map格式，如：map[key1:value1 key2:value2]
+        const storageData = parseMapData(value);
+        if (storageData) {
+          return (
+            <div className="attack-log-viewer__storage">
+              {Object.entries(storageData).map(([storageKey, storageValue]) => (
+                <div key={storageKey} className="attack-log-viewer__storage-item">
+                  <span className="attack-log-viewer__storage-key">{storageKey}</span>
+                  <span className="attack-log-viewer__storage-value">{storageValue}</span>
+                </div>
+              ))}
+            </div>
+          );
+        }
+      } catch {
+        // 继续执行，返回原始值
+      }
+      return <span className="attack-log-viewer__map-simple-value">{value}</span>;
+    }
+    
+    return <span className="attack-log-viewer__map-simple-value">{value}</span>;
+  };
+
   const renderScreenshot = (result) => {
     if (!result) return null;
     
@@ -322,19 +484,24 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
 
                     {renderScreenshot(log.result)}
                     
-                    <div className="attack-log-viewer__detail-section">
-                      <label className="attack-log-viewer__detail-label">执行结果:</label>
-                      <div className="attack-log-viewer__detail-value">
-                        <pre><code>{attackLogService.formatLogResult(log.result)}</code></pre>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => copyToClipboard(log.result)}
-                        >
-                          📋
-                        </Button>
+                    {/* 如果是map格式，使用专门的map展示组件 */}
+                    {log.result && log.result.startsWith('map[') ? (
+                      renderMapData(log.result)
+                    ) : (
+                      <div className="attack-log-viewer__detail-section">
+                        <label className="attack-log-viewer__detail-label">执行结果:</label>
+                        <div className="attack-log-viewer__detail-value">
+                          <pre><code>{attackLogService.formatLogResult(log.result)}</code></pre>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(log.result)}
+                          >
+                            📋
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {log.user_agent && (
                       <div className="attack-log-viewer__detail-section">

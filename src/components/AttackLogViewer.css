@@ -237,6 +237,144 @@
   gap: 0.25rem;
 }
 
+/* Map数据展示样式 */
+.attack-log-viewer__map-section {
+  margin-bottom: 1rem;
+}
+
+.attack-log-viewer__map-container {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.attack-log-viewer__map-item {
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.attack-log-viewer__map-item:last-child {
+  border-bottom: none;
+}
+
+.attack-log-viewer__map-item:hover {
+  background-color: var(--bg-hover, rgba(0, 0, 0, 0.05));
+}
+
+.attack-log-viewer__map-key {
+  flex: 0 0 150px;
+  padding: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: var(--bg-tertiary, rgba(0, 0, 0, 0.02));
+  border-right: 1px solid var(--border-color);
+}
+
+.attack-log-viewer__map-value {
+  flex: 1;
+  padding: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.attack-log-viewer__map-simple-value {
+  flex: 1;
+  word-break: break-all;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.attack-log-viewer__copy-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.attack-log-viewer__copy-btn:hover {
+  background-color: var(--bg-hover, rgba(0, 0, 0, 0.1));
+}
+
+/* Cookies特殊展示 */
+.attack-log-viewer__cookies {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.attack-log-viewer__cookie-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.attack-log-viewer__cookie-name {
+  font-weight: 500;
+  color: var(--primary-color);
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.attack-log-viewer__cookie-value {
+  color: var(--text-secondary);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  word-break: break-all;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Storage特殊展示 */
+.attack-log-viewer__storage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.attack-log-viewer__storage-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.attack-log-viewer__storage-key {
+  font-weight: 500;
+  color: var(--success-color);
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.attack-log-viewer__storage-value {
+  color: var(--text-secondary);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  word-break: break-all;
+  flex: 1;
+  min-width: 0;
+}
+
 .attack-log-viewer__pagination {
   display: flex;
   justify-content: center;
