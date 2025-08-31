@@ -89,71 +89,105 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
     });
   };
 
-  const getModuleConfigForm = (module) => {
-    const config = getModuleConfig(module.name);
+  const renderParamInput = (module, param, config) => {
+    const value = config?.args?.[param.name] || param.default || '';
     
-    if (module.name === 'xhr') {
+    if (param.type === 'number') {
       return (
-        <div className="project-form__module-config">
-          <h5>XHR请求配置</h5>
-          <div className="project-form__config-row">
-            <label>请求方法:</label>
-            <select
-              value={config?.args?.method || 'GET'}
-              onChange={(e) => updateModuleConfig(module.name, {
-                ...config?.args,
-                method: e.target.value
-              })}
-            >
-              <option value="GET">GET</option>
-              <option value="POST">POST</option>
-              <option value="PUT">PUT</option>
-              <option value="DELETE">DELETE</option>
-            </select>
-          </div>
-          <div className="project-form__config-row">
-            <label>请求URL:</label>
-            <input
-              type="text"
-              placeholder="http://example.com/api"
-              value={config?.args?.url || ''}
-              onChange={(e) => updateModuleConfig(module.name, {
-                ...config?.args,
-                url: e.target.value
-              })}
-            />
-          </div>
-          <div className="project-form__config-row">
-            <label>请求数据 (POST/PUT):</label>
-            <textarea
-              placeholder='{"key": "value"}'
-              value={config?.args?.data || ''}
-              onChange={(e) => updateModuleConfig(module.name, {
-                ...config?.args,
-                data: e.target.value
-              })}
-              rows={2}
-            />
+        <div key={param.name} className="project-form__config-row">
+          <label>{param.description}{param.required ? ' *' : ''}:</label>
+          <input
+            type="number"
+            placeholder={param.default?.toString() || ''}
+            value={value}
+            onChange={(e) => updateModuleConfig(module.name, {
+              ...config?.args,
+              [param.name]: e.target.value
+            })}
+          />
+        </div>
+      );
+    }
+    
+    if (param.type === 'boolean') {
+      return (
+        <div key={param.name} className="project-form__config-row">
+          <label>{param.description}{param.required ? ' *' : ''}:</label>
+          <select
+            value={value}
+            onChange={(e) => updateModuleConfig(module.name, {
+              ...config?.args,
+              [param.name]: e.target.value
+            })}
+          >
+            <option value="true">是</option>
+            <option value="false">否</option>
+          </select>
+        </div>
+      );
+    }
+    
+    if (param.type === 'array') {
+      return (
+        <div key={param.name} className="project-form__config-row">
+          <label>{param.description}{param.required ? ' *' : ''}:</label>
+          <textarea
+            placeholder={param.default || '["item1", "item2"]'}
+            value={value}
+            onChange={(e) => updateModuleConfig(module.name, {
+              ...config?.args,
+              [param.name]: e.target.value
+            })}
+            rows={3}
+          />
+          <div className="project-form__param-hint">
+            输入JSON数组格式，例如: ["item1", "item2"]
           </div>
         </div>
       );
     }
     
-    if (module.name === 'eval') {
+    // 默认字符串类型
+    return (
+      <div key={param.name} className="project-form__config-row">
+        <label>{param.description}{param.required ? ' *' : ''}:</label>
+        <input
+          type="text"
+          placeholder={param.default || ''}
+          value={value}
+          onChange={(e) => updateModuleConfig(module.name, {
+            ...config?.args,
+            [param.name]: e.target.value
+          })}
+        />
+      </div>
+    );
+  };
+
+  const getModuleConfigForm = (module) => {
+    const config = getModuleConfig(module.name);
+    
+    // 如果模块有参数定义，使用动态参数渲染
+    if (module.params && module.params.length > 0) {
       return (
         <div className="project-form__module-config">
-          <h5>代码执行配置</h5>
-          <div className="project-form__config-row">
-            <label>JavaScript代码:</label>
-            <textarea
-              placeholder="document.title"
-              value={config?.args?.code || ''}
-              onChange={(e) => updateModuleConfig(module.name, {
-                code: e.target.value
-              })}
-              rows={3}
-            />
-          </div>
+          <h5>{module.display_name}配置</h5>
+          {module.params.map(param => renderParamInput(module, param, config))}
+          {module.examples && module.examples.length > 0 && (
+            <div className="project-form__examples">
+              <div className="project-form__examples-title">使用示例:</div>
+              {module.examples.map((example, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className="project-form__example-btn"
+                  onClick={() => updateModuleConfig(module.name, example.args)}
+                >
+                  {example.title}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       );
     }

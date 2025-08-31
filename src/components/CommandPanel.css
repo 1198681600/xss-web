@@ -114,6 +114,157 @@
   flex: 1;
 }
 
+/* 模式选择器样式 */
+.command-panel__mode-selector {
+  margin-bottom: var(--space-3);
+}
+
+.command-panel__mode-tabs {
+  display: flex;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  padding: 4px;
+  gap: 4px;
+}
+
+.command-panel__mode-tab {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.command-panel__mode-tab.active {
+  background-color: var(--bg-card);
+  color: var(--primary-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.command-panel__mode-tab:hover:not(.active) {
+  color: var(--text-primary);
+}
+
+/* 模块信息样式 */
+.command-panel__module-info {
+  padding: var(--space-3);
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.command-panel__module-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.command-panel__module-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.command-panel__risk-badge {
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.command-panel__risk-badge--低 {
+  background-color: var(--success-color-light, rgba(34, 197, 94, 0.1));
+  color: var(--success-color);
+}
+
+.command-panel__risk-badge--中 {
+  background-color: var(--warning-color-light, rgba(245, 158, 11, 0.1));
+  color: var(--warning-color);
+}
+
+.command-panel__risk-badge--高 {
+  background-color: var(--danger-color-light, rgba(239, 68, 68, 0.1));
+  color: var(--danger-color);
+}
+
+.command-panel__module-description {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.command-panel__module-examples {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-color);
+}
+
+.command-panel__example {
+  margin-bottom: var(--space-2);
+  padding: var(--space-2);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.command-panel__example:last-child {
+  margin-bottom: 0;
+}
+
+.command-panel__example-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.command-panel__example-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+  line-height: 1.4;
+}
+
+/* 模块参数样式 */
+.command-panel__module-params {
+  padding: var(--space-3);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.command-panel__params-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.command-panel__param-group {
+  margin-bottom: var(--space-3);
+}
+
+.command-panel__param-group:last-child {
+  margin-bottom: 0;
+}
+
+.command-panel__param-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+  font-style: italic;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .command-panel__actions {
@@ -128,5 +279,11 @@
   .command-panel__examples-title {
     margin-right: 0;
     margin-bottom: var(--space-1);
+  }
+  
+  .command-panel__module-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
   }
 }
