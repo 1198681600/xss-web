@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Button, Card, Badge } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import TwoFactorSetup from './TwoFactorSetup';
-import { API_BASE_URL } from '../constants/api';
 import { toast } from './Toast';
 import './TwoFactorManagement.css';
 
@@ -15,6 +14,7 @@ const TwoFactorManagement = () => {
 
   useEffect(() => {
     checkTwoFactorStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkTwoFactorStatus = async () => {

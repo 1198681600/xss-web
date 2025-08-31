@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Badge, Button, Loading } from './ui';
-import { useAuth } from '../contexts/AuthContext';
 import projectService from '../services/project';
 import './ProjectList.css';
 
@@ -8,7 +7,6 @@ const ProjectList = ({ onSelectProject, selectedProjectId, refreshTrigger, onCre
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { isAdmin } = useAuth();
 
   const loadProjects = async () => {
     setIsLoading(true);

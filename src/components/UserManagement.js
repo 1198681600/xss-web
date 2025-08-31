@@ -31,6 +31,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     loadUsers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCreateUser = async (e) => {

@@ -1,40 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Badge } from './ui';
 import { useAuth } from '../contexts/AuthContext';
-import ClientList from './ClientList';
-import CommandPanel from './CommandPanel';
-import ResultDisplay from './ResultDisplay';
-import PayloadGenerator from './PayloadGenerator';
 import UserManagement from './UserManagement';
 import ProjectDashboard from './ProjectDashboard';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [selectedClient, setSelectedClient] = useState(null);
-  const [commandResults, setCommandResults] = useState([]);
   const [activeTab, setActiveTab] = useState('projects');
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [selectedProject, setSelectedProject] = useState(null);
   const { logout, user } = useAuth();
-
-  const handleSelectClient = (client) => {
-    setSelectedClient(client);
-    if (activeTab !== 'command') {
-      setActiveTab('command');
-    }
-  };
-
-  const handleCommandResult = (result) => {
-    if (result && result.results && result.results.length > 0) {
-      setCommandResults(prev => [...result.results, ...prev]);
-      setActiveTab('results');
-      setRefreshTrigger(prev => prev + 1);
-    }
-  };
-
-  const handleClearResults = () => {
-    setCommandResults([]);
-  };
 
   const getConnectionStatus = () => {
     return <Badge variant="success">HTTP API</Badge>;
@@ -120,7 +94,7 @@ const AdminDashboard = () => {
         <div className="admin-dashboard__content">
           {activeTab === 'projects' && (
             <div className="admin-dashboard__tab-content">
-              <ProjectDashboard onProjectSelect={setSelectedProject} hideHeader={true} />
+              <ProjectDashboard hideHeader={true} />
             </div>
           )}
 
@@ -142,7 +116,7 @@ const AdminDashboard = () => {
           </div>
           <div className="admin-dashboard__footer-right">
             <span className="admin-dashboard__footer-text">
-              服务器: localhost:8088 | 客户端数: {commandResults.length > 0 ? '有数据' : '无数据'}
+              服务器: localhost:8088
             </span>
           </div>
         </div>

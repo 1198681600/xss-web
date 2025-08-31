@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Card, Badge, Button, Loading } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import SessionList from './SessionList';
-import AttackLogViewer from './AttackLogViewer';
 import projectService from '../services/project';
 import './ProjectDetail.css';
 
@@ -13,30 +12,18 @@ const ProjectDetail = ({
   onDeleteProject,
   refreshTrigger 
 }) => {
-  const [selectedSession, setSelectedSession] = useState(null);
   const [activeTab, setActiveTab] = useState('sessions');
-  const [stats, setStats] = useState(null);
   const [payload, setPayload] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { isAdmin } = useAuth();
 
-  const loadProjectStats = async () => {
-    if (!project?.id) return;
-    
-    try {
-      const statsData = await projectService.getProjectStats(project.id);
-      setStats(statsData);
-    } catch (error) {
-      console.error('获取项目统计失败:', error);
-    }
-  };
 
   const loadProjectPayload = async () => {
     if (!project?.id) return;
     
     setIsLoading(true);
     try {
-      const payloadScript = await projectService.getProjectPayload(project.id);
+      const payloadScript = await projectService.getProjectPayload(project.jid);
       setPayload(payloadScript);
     } catch (error) {
       console.error('获取载荷失败:', error);
@@ -47,12 +34,10 @@ const ProjectDetail = ({
   };
 
   useEffect(() => {
-    if (project?.id) {
-      loadProjectStats();
-      if (activeTab === 'payload') {
-        loadProjectPayload();
-      }
+    if (project?.id && activeTab === 'payload') {
+      loadProjectPayload();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id, activeTab]);
 
   const getStatusBadge = (status) => {
@@ -69,10 +54,9 @@ const ProjectDetail = ({
     navigator.clipboard.writeText(payload);
   };
 
+
   const tabs = [
     { id: 'sessions', name: '会话列表', icon: '💻' },
-    { id: 'logs', name: '攻击记录', icon: '📋' },
-    { id: 'stats', name: '统计信息', icon: '📊' },
     { id: 'payload', name: '载荷代码', icon: '🚀' },
     { id: 'settings', name: '项目设置', icon: '⚙️' }
   ];
@@ -137,21 +121,6 @@ const ProjectDetail = ({
 
       <div className="project-detail__meta">
         <div className="project-detail__meta-item">
-          <span className="project-detail__meta-label">目标URL:</span>
-          <a 
-            href={project.target_url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="project-detail__meta-value project-detail__meta-link"
-          >
-            {project.target_url}
-          </a>
-        </div>
-        <div className="project-detail__meta-item">
-          <span className="project-detail__meta-label">分组:</span>
-          <span className="project-detail__meta-value">{project.group}</span>
-        </div>
-        <div className="project-detail__meta-item">
           <span className="project-detail__meta-label">创建时间:</span>
           <span className="project-detail__meta-value">
             {formatDate(project.created_at)}
@@ -188,68 +157,11 @@ const ProjectDetail = ({
         <div className="project-detail__tab-content">
           {activeTab === 'sessions' && (
             <SessionList
-              projectId={project.id}
-              onSelectSession={setSelectedSession}
-              selectedSessionId={selectedSession?.id}
+              projectId={project.jid}
               refreshTrigger={refreshTrigger}
             />
           )}
 
-          {activeTab === 'logs' && (
-            <AttackLogViewer
-              projectId={project.id}
-              title="项目攻击记录"
-            />
-          )}
-
-          {activeTab === 'stats' && (
-            <div className="project-detail__stats">
-              {stats ? (
-                <div className="project-detail__stats-grid">
-                  <Card className="project-detail__stat-card">
-                    <h4>📊 会话统计</h4>
-                    <div className="project-detail__stat-items">
-                      <div className="project-detail__stat-item">
-                        <span>总会话数:</span>
-                        <Badge variant="primary">{stats.total_sessions}</Badge>
-                      </div>
-                      <div className="project-detail__stat-item">
-                        <span>活跃会话:</span>
-                        <Badge variant="success">{stats.active_sessions}</Badge>
-                      </div>
-                      <div className="project-detail__stat-item">
-                        <span>今日新增:</span>
-                        <Badge variant="info">{stats.today_sessions}</Badge>
-                      </div>
-                      <div className="project-detail__stat-item">
-                        <span>唯一IP:</span>
-                        <Badge variant="outline">{stats.unique_ips}</Badge>
-                      </div>
-                    </div>
-                  </Card>
-
-                  {stats.browser_stats && (
-                    <Card className="project-detail__stat-card">
-                      <h4>🌐 浏览器分布</h4>
-                      <div className="project-detail__browser-stats">
-                        {Object.entries(stats.browser_stats).map(([browser, count]) => (
-                          <div key={browser} className="project-detail__browser-item">
-                            <span className="project-detail__browser-name">{browser}:</span>
-                            <Badge variant="outline" size="sm">{count}</Badge>
-                          </div>
-                        ))}
-                      </div>
-                    </Card>
-                  )}
-                </div>
-              ) : (
-                <div className="project-detail__stats-loading">
-                  <Loading />
-                  <p>加载统计数据...</p>
-                </div>
-              )}
-            </div>
-          )}
 
           {activeTab === 'payload' && (
             <div className="project-detail__payload">
@@ -303,14 +215,6 @@ const ProjectDetail = ({
                   <div className="project-detail__setting-item">
                     <span className="project-detail__setting-label">项目编号:</span>
                     <span className="project-detail__setting-value">{project.jid}</span>
-                  </div>
-                  <div className="project-detail__setting-item">
-                    <span className="project-detail__setting-label">目标URL:</span>
-                    <span className="project-detail__setting-value">{project.target_url}</span>
-                  </div>
-                  <div className="project-detail__setting-item">
-                    <span className="project-detail__setting-label">项目分组:</span>
-                    <span className="project-detail__setting-value">{project.group}</span>
                   </div>
                   <div className="project-detail__setting-item">
                     <span className="project-detail__setting-label">项目状态:</span>

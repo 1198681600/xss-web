@@ -52,7 +52,11 @@ const CommandPanel = ({ selectedClient, onCommandResult, projectId }) => {
       }
 
       if (result.status === 'success' && onCommandResult) {
-        onCommandResult(result.data);
+        if (result.data.results && Array.isArray(result.data.results)) {
+          result.data.results.forEach(commandResult => {
+            onCommandResult(commandResult);
+          });
+        }
       }
     } catch (error) {
       console.error('命令执行失败:', error);

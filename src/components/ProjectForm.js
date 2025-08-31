@@ -7,8 +7,6 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    target_url: '',
-    group: '',
     status: 'active',
     enabled_modules: []
   });
@@ -22,8 +20,6 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
       setFormData({
         name: project.name || '',
         description: project.description || '',
-        target_url: project.target_url || '',
-        group: project.group || '',
         status: project.status || 'active',
         enabled_modules: project.enabled_modules || []
       });
@@ -61,8 +57,8 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
     e.preventDefault();
     setError('');
 
-    if (!formData.name || !formData.target_url) {
-      setError('请填写项目名称和目标URL');
+    if (!formData.name) {
+      setError('请填写项目名称');
       return;
     }
 
@@ -119,31 +115,17 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
           <div className="project-form__section">
             <h3 className="project-form__section-title">基本信息</h3>
             
-            <div className="project-form__row">
-              <div className="project-form__field">
-                <label className="project-form__label">项目名称 *</label>
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="输入项目名称"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                  required
-                />
-              </div>
-              
-              <div className="project-form__field">
-                <label className="project-form__label">项目分组</label>
-                <Input
-                  type="text"
-                  name="group"
-                  placeholder="例: 生产环境、测试环境"
-                  value={formData.group}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                />
-              </div>
+            <div className="project-form__field">
+              <label className="project-form__label">项目名称 *</label>
+              <Input
+                type="text"
+                name="name"
+                placeholder="输入项目名称"
+                value={formData.name}
+                onChange={handleInputChange}
+                disabled={isLoading}
+                required
+              />
             </div>
 
             <div className="project-form__field">
@@ -159,33 +141,18 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
               />
             </div>
 
-            <div className="project-form__row">
-              <div className="project-form__field">
-                <label className="project-form__label">目标URL *</label>
-                <Input
-                  type="url"
-                  name="target_url"
-                  placeholder="https://example.com"
-                  value={formData.target_url}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                  required
-                />
-              </div>
-              
-              <div className="project-form__field">
-                <label className="project-form__label">项目状态</label>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleInputChange}
-                  className="project-form__select"
-                  disabled={isLoading}
-                >
-                  <option value="active">活跃</option>
-                  <option value="inactive">停用</option>
-                </select>
-              </div>
+            <div className="project-form__field">
+              <label className="project-form__label">项目状态</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className="project-form__select"
+                disabled={isLoading}
+              >
+                <option value="active">活跃</option>
+                <option value="inactive">停用</option>
+              </select>
             </div>
           </div>
 

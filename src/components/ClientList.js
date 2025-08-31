@@ -25,6 +25,7 @@ const ClientList = ({ onSelectClient, selectedClientId, refreshTrigger, readonly
     if (projectId) {
       fetchClients();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshTrigger, getAllClients, projectId]);
 
   const getStatusBadge = (status) => {

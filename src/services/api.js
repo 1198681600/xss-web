@@ -50,23 +50,26 @@ class ApiService {
   }
 
   async sendCommandToAll(command, args = {}, projectId) {
-    const endpoint = projectId ? `${API_ENDPOINTS.COMMANDS}?project=${projectId}` : API_ENDPOINTS.COMMANDS;
-    return this.request(endpoint, {
+    return this.request(API_ENDPOINTS.COMMANDS, {
       method: 'POST',
       body: JSON.stringify({ command, args })
     });
   }
 
   async sendCommandToTarget(targetId, command, args = {}, projectId) {
-    const endpoint = projectId ? `${API_ENDPOINTS.COMMANDS}?project=${projectId}` : API_ENDPOINTS.COMMANDS;
+    const endpoint = projectId ? 
+      `${API_ENDPOINTS.CLIENT_COMMANDS(targetId)}?project=${projectId}` : 
+      API_ENDPOINTS.CLIENT_COMMANDS(targetId);
     return this.request(endpoint, {
       method: 'POST',
-      body: JSON.stringify({ target_id: targetId, command, args })
+      body: JSON.stringify({ command, args })
     });
   }
 
   async sendCommandToClient(clientId, command, args = {}, projectId) {
-    const endpoint = projectId ? `${API_ENDPOINTS.CLIENT_COMMANDS(clientId)}?project=${projectId}` : API_ENDPOINTS.CLIENT_COMMANDS(clientId);
+    const endpoint = projectId ? 
+      `${API_ENDPOINTS.CLIENT_COMMANDS(clientId)}?project=${projectId}` : 
+      API_ENDPOINTS.CLIENT_COMMANDS(clientId);
     return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify({ command, args })

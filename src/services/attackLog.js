@@ -108,4 +108,5 @@ class AttackLogService {
   }
 }
 
-export default new AttackLogService();
+const attackLogService = new AttackLogService();
+export default attackLogService;

@@ -20,6 +20,7 @@ const TwoFactorSetup = ({ onComplete, onCancel }) => {
       setHasInitialized(true);
       generateQRCode();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasInitialized]);
 
   const generateQRCode = async () => {

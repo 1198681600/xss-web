@@ -11,6 +11,7 @@ export { default as ProjectList } from './ProjectList';
 export { default as ProjectDetail } from './ProjectDetail';
 export { default as ProjectForm } from './ProjectForm';
 export { default as SessionList } from './SessionList';
+export { default as SessionDetail } from './SessionDetail';
 export { default as AttackLogViewer } from './AttackLogViewer';
 export { default as ProtectedRoute } from './ProtectedRoute';
 export { default as TwoFactorSetup } from './TwoFactorSetup';

@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext';
 import ProjectList from './ProjectList';
 import ProjectDetail from './ProjectDetail';
 import ProjectForm from './ProjectForm';
-import UserProfile from './UserProfile';
 import projectService from '../services/project';
 import './ProjectDashboard.css';
 
@@ -14,7 +13,6 @@ const ProjectDashboard = ({ onProjectSelect, hideHeader = false }) => {
   const [editingProject, setEditingProject] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [showProfile, setShowProfile] = useState(false);
   const { logout, user, isAdmin } = useAuth();
 
   const handleSelectProject = (project) => {
@@ -74,14 +72,6 @@ const ProjectDashboard = ({ onProjectSelect, hideHeader = false }) => {
   };
 
   const handleBackToList = () => {
-    setSelectedProject(null);
-    setShowForm(false);
-    setEditingProject(null);
-    setShowProfile(false);
-  };
-
-  const handleShowProfile = () => {
-    setShowProfile(true);
     setSelectedProject(null);
     setShowForm(false);
     setEditingProject(null);

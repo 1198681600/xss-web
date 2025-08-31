@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Badge, Button, Loading } from './ui';
-import AttackLogViewer from './AttackLogViewer';
+import SessionDetail from './SessionDetail';
 import projectService from '../services/project';
 import './SessionList.css';
 
-const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTrigger }) => {
+const SessionList = ({ projectId, refreshTrigger }) => {
   const [sessions, setSessions] = useState([]);
   const [totalSessions, setTotalSessions] = useState(0);
   const [activeSessions, setActiveSessions] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [viewingSessionLogs, setViewingSessionLogs] = useState(null);
+  const [selectedSession, setSelectedSession] = useState(null);
 
   const loadSessions = async () => {
     if (!projectId) return;
@@ -32,6 +32,7 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
 
   useEffect(() => {
     loadSessions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, refreshTrigger]);
 
   const getStatusBadge = (status) => {
@@ -69,17 +70,13 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
     });
   };
 
-  const truncateUrl = (url, maxLength = 40) => {
-    return url.length > maxLength ? `${url.substring(0, maxLength)}...` : url;
-  };
 
-  const handleViewLogs = (session, event) => {
-    event.stopPropagation();
-    setViewingSessionLogs(session);
+  const handleSessionClick = (session) => {
+    setSelectedSession(session);
   };
 
   const handleBackToSessions = () => {
-    setViewingSessionLogs(null);
+    setSelectedSession(null);
   };
 
   if (isLoading) {
@@ -91,24 +88,13 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
     );
   }
 
-  if (viewingSessionLogs) {
+  if (selectedSession) {
     return (
-      <div className="session-list">
-        <div className="session-list__logs-header">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBackToSessions}
-          >
-            ← 返回会话列表
-          </Button>
-          <h3>📱 会话 {viewingSessionLogs.jid} 的攻击记录</h3>
-        </div>
-        <AttackLogViewer
-          sessionId={viewingSessionLogs.id}
-          title={`会话 ${viewingSessionLogs.jid} 攻击记录`}
-        />
-      </div>
+      <SessionDetail
+        session={selectedSession}
+        onBack={handleBackToSessions}
+        projectId={projectId}
+      />
     );
   }
 
@@ -162,16 +148,11 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
               <div className="session-list__cell session-list__cell--jid">JID</div>
               <div className="session-list__cell session-list__cell--ip">IP</div>
               <div className="session-list__cell session-list__cell--browser">浏览器</div>
-              <div className="session-list__cell session-list__cell--url">URL</div>
               <div className="session-list__cell session-list__cell--status">状态</div>
-              <div className="session-list__cell session-list__cell--group">分组</div>
-              <div className="session-list__cell session-list__cell--notes">备注</div>
               <div className="session-list__cell session-list__cell--time">首次上线</div>
               <div className="session-list__cell session-list__cell--last">上线时间</div>
               <div className="session-list__cell session-list__cell--count">连接</div>
               <div className="session-list__cell session-list__cell--cookie">Cookie</div>
-              <div className="session-list__cell session-list__cell--events">事件类型</div>
-              <div className="session-list__cell session-list__cell--actions">操作</div>
             </div>
           </div>
           
@@ -179,10 +160,9 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
             {sessions.map((session, index) => (
               <div
                 key={session.id}
-                className={`session-list__table-row ${
-                  selectedSessionId === session.id ? 'session-list__table-row--selected' : ''
-                }`}
-                onClick={() => onSelectSession(session)}
+                className="session-list__table-row session-list__table-row--clickable"
+                onClick={() => handleSessionClick(session)}
+                title="点击查看会话详情"
               >
                 <div className="session-list__cell session-list__cell--jid">
                   <Badge variant="primary" size="sm">{session.jid}</Badge>
@@ -200,19 +180,8 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
                     </span>
                   </div>
                 </div>
-                <div className="session-list__cell session-list__cell--url">
-                  <span className="session-list__url" title={session.url}>
-                    {truncateUrl(session.url)}
-                  </span>
-                </div>
                 <div className="session-list__cell session-list__cell--status">
                   {getStatusBadge(session.status)}
-                </div>
-                <div className="session-list__cell session-list__cell--group">
-                  <span className="session-list__group">{session.group}</span>
-                </div>
-                <div className="session-list__cell session-list__cell--notes">
-                  <span className="session-list__notes">{session.notes}</span>
                 </div>
                 <div className="session-list__cell session-list__cell--time">
                   <span className="session-list__time">
@@ -230,27 +199,9 @@ const SessionList = ({ projectId, onSelectSession, selectedSessionId, refreshTri
                   </Badge>
                 </div>
                 <div className="session-list__cell session-list__cell--cookie">
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    className="session-list__cookie-btn"
-                    title={session.cookie}
-                  >
-                    查看 ({session.cookie ? session.cookie.length : 0})
-                  </Button>
-                </div>
-                <div className="session-list__cell session-list__cell--events">
-                  <span className="session-list__event-type">{session.event_type}</span>
-                </div>
-                <div className="session-list__cell session-list__cell--actions">
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    onClick={(e) => handleViewLogs(session, e)}
-                    title="查看攻击记录"
-                  >
-                    📋 记录
-                  </Button>
+                  <span className="session-list__cookie-info" title={session.cookie}>
+                    {session.cookie ? `(${session.cookie.length}字符)` : '无'}
+                  </span>
                 </div>
               </div>
             ))}

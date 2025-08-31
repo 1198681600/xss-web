@@ -15,6 +15,7 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
 
   useEffect(() => {
     loadLogs();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId, projectId, currentPage]);
 
   const loadLogs = async () => {

@@ -9,10 +9,11 @@ const UserProfile = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
-  const { user, refreshUserInfo, authService } = useAuth();
+  const { authService } = useAuth();
 
   useEffect(() => {
     loadUserInfo();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadUserInfo = async () => {
