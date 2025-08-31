@@ -7,7 +7,6 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    target_url: '',
     group: '',
     status: 'active',
     enabled_modules: [],
@@ -23,7 +22,6 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
       setFormData({
         name: project.name || '',
         description: project.description || '',
-        target_url: project.target_url || '',
         group: project.group || '',
         status: project.status || 'active',
         enabled_modules: project.enabled_modules || [],
@@ -172,10 +170,6 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
       return;
     }
 
-    if (!formData.target_url) {
-      setError('请填写目标URL');
-      return;
-    }
 
     if (formData.enabled_modules.length === 0) {
       setError('请至少选择一个攻击模块');
@@ -256,18 +250,6 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
               />
             </div>
 
-            <div className="project-form__field">
-              <label className="project-form__label">目标URL *</label>
-              <Input
-                type="url"
-                name="target_url"
-                placeholder="https://example.com"
-                value={formData.target_url}
-                onChange={handleInputChange}
-                disabled={isLoading}
-                required
-              />
-            </div>
 
             <div className="project-form__field">
               <label className="project-form__label">项目分组</label>

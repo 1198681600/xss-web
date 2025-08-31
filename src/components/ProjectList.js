@@ -143,13 +143,6 @@ const ProjectList = ({ onSelectProject, selectedProjectId, refreshTrigger, onCre
                 
                 <div className="project-list__info-grid">
                   <div className="project-list__info-item">
-                    <span className="project-list__info-label">目标URL:</span>
-                    <span className="project-list__info-value" title={project.target_url}>
-                      {project.target_url}
-                    </span>
-                  </div>
-                  
-                  <div className="project-list__info-item">
                     <span className="project-list__info-label">分组:</span>
                     <span className="project-list__info-value">{project.group}</span>
                   </div>
