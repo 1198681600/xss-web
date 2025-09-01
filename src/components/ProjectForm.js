@@ -10,7 +10,10 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
     group: '',
     status: 'active',
     enabled_modules: [],
-    module_configs: []
+    module_configs: [],
+    telegram_bot_token: '',
+    telegram_chat_id: '',
+    telegram_enabled: false
   });
   const [availableModules, setAvailableModules] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +28,10 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
         group: project.group || '',
         status: project.status || 'active',
         enabled_modules: project.enabled_modules || [],
-        module_configs: project.module_configs || []
+        module_configs: project.module_configs || [],
+        telegram_bot_token: project.telegram_bot_token || '',
+        telegram_chat_id: project.telegram_chat_id || '',
+        telegram_enabled: project.telegram_enabled || false
       });
     }
   }, [project, isEdit]);
@@ -210,6 +216,17 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
       return;
     }
 
+    if (formData.telegram_enabled) {
+      if (!formData.telegram_bot_token) {
+        setError('启用Telegram通知时必须填写Bot Token');
+        return;
+      }
+      if (!formData.telegram_chat_id) {
+        setError('启用Telegram通知时必须填写Chat ID');
+        return;
+      }
+    }
+
     setIsLoading(true);
     try {
       let result;
@@ -285,6 +302,7 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
             </div>
 
 
+
             <div className="project-form__field">
               <label className="project-form__label">项目分组</label>
               <Input
@@ -310,6 +328,59 @@ const ProjectForm = ({ project, onSave, onCancel, isEdit = false }) => {
                 <option value="inactive">停用</option>
               </select>
             </div>
+          </div>
+
+          <div className="project-form__section">
+            <h3 className="project-form__section-title">Telegram 通知配置</h3>
+            <p className="project-form__section-desc">
+              配置 Telegram 通知，在有新的XSS受害者连接时发送通知
+            </p>
+            
+            <div className="project-form__field">
+              <label className="project-form__label">
+                <input
+                  type="checkbox"
+                  name="telegram_enabled"
+                  checked={formData.telegram_enabled}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    telegram_enabled: e.target.checked
+                  }))}
+                  disabled={isLoading}
+                />
+                启用 Telegram 通知
+              </label>
+            </div>
+
+            {formData.telegram_enabled && (
+              <>
+                <div className="project-form__field">
+                  <label className="project-form__label">Telegram Bot Token *</label>
+                  <Input
+                    type="text"
+                    name="telegram_bot_token"
+                    placeholder="1234567890:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+                    value={formData.telegram_bot_token}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                    required={formData.telegram_enabled}
+                  />
+                </div>
+
+                <div className="project-form__field">
+                  <label className="project-form__label">Telegram Chat ID *</label>
+                  <Input
+                    type="text"
+                    name="telegram_chat_id"
+                    placeholder="123456789"
+                    value={formData.telegram_chat_id}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                    required={formData.telegram_enabled}
+                  />
+                </div>
+              </>
+            )}
           </div>
 
           <div className="project-form__section">

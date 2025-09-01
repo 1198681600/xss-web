@@ -27,7 +27,10 @@ Authorization: Bearer <token>
         "code": "document.title"
       }
     }
-  ]
+  ],
+  "telegram_bot_token": "1234567890:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+  "telegram_chat_id": "123456789",
+  "telegram_enabled": true
 }
 ```
 - `name` (string): 项目名称，必须唯一
@@ -35,6 +38,9 @@ Authorization: Bearer <token>
 - `target_url` (string): 目标URL地址
 - `enabled_modules` (array): 启用的XSS攻击模块列表
 - `module_configs` (array): 模块配置列表，为需要参数的模块设置执行参数
+- `telegram_bot_token` (string): Telegram Bot Token，用于发送通知
+- `telegram_chat_id` (string): Telegram 聊天ID，接收通知的目标
+- `telegram_enabled` (boolean): 是否启用 Telegram 通知
 
 **响应体:**
 ```json
@@ -60,6 +66,9 @@ Authorization: Bearer <token>
       }
     ],
     "owner_id": 1,
+    "telegram_bot_token": "***ew11",
+    "telegram_chat_id": "123456789",
+    "telegram_enabled": true,
     "created_at": "2025-08-30T14:00:00Z",
     "updated_at": "2025-08-30T14:00:00Z"
   }
@@ -76,6 +85,9 @@ Authorization: Bearer <token>
 - `data.status` (string): 项目状态 ("active" | "inactive")
 - `data.enabled_modules` (array): 启用的攻击模块
 - `data.owner_id` (uint): 项目创建者ID
+- `data.telegram_bot_token` (string): Telegram Bot Token（已脱敏）
+- `data.telegram_chat_id` (string): Telegram 聊天ID
+- `data.telegram_enabled` (boolean): 是否启用 Telegram 通知
 - `data.created_at` (string): 创建时间
 - `data.updated_at` (string): 更新时间
 
@@ -172,7 +184,10 @@ Authorization: Bearer <token>
   "target_url": "https://newexample.com",
   "group": "测试环境",
   "status": "inactive",
-  "enabled_modules": ["cookie", "eval", "alert"]
+  "enabled_modules": ["cookie", "eval", "alert"],
+  "telegram_bot_token": "1234567890:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+  "telegram_chat_id": "123456789",
+  "telegram_enabled": false
 }
 ```
 - `name` (string): 项目名称
@@ -181,6 +196,9 @@ Authorization: Bearer <token>
 - `group` (string): 项目分组
 - `status` (string): 项目状态 ("active" | "inactive")
 - `enabled_modules` (array): 启用的攻击模块
+- `telegram_bot_token` (string): Telegram Bot Token
+- `telegram_chat_id` (string): Telegram 聊天ID
+- `telegram_enabled` (boolean): 是否启用 Telegram 通知
 
 **响应体:**
 ```json
@@ -197,6 +215,9 @@ Authorization: Bearer <token>
     "status": "inactive",
     "enabled_modules": ["cookie", "eval", "alert"],
     "owner_id": 1,
+    "telegram_bot_token": "***ew11",
+    "telegram_chat_id": "123456789",
+    "telegram_enabled": false,
     "updated_at": "2025-08-30T15:00:00Z"
   }
 }
@@ -537,6 +558,35 @@ Authorization: Bearer <token>
 - `data.results[].timestamp` (string): 执行时间
 - `data.total_sent` (uint): 发送命令数量
 - `data.total_received` (uint): 收到结果数量
+
+## 📬 Telegram 通知功能
+
+当项目启用 Telegram 通知时，在以下情况会自动发送通知：
+
+### 🎯 受害者连接通知
+当有新的 XSS 受害者连接到项目时，会发送包含以下信息的通知：
+- 项目名称和ID
+- 受害者ID和IP地址
+- 浏览器信息
+- 连接时间
+- 目标URL
+
+**通知消息格式:**
+```
+🎯 **新的 XSS 受害者连接**
+
+**项目:** 测试项目1 (PROJ001)
+**受害者ID:** victim_123
+**IP地址:** 192.168.1.100
+**浏览器:** Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+**连接时间:** 2025-09-01 15:30:45
+**目标URL:** https://example.com
+```
+
+### 配置要求
+- 项目必须设置有效的 `telegram_bot_token`
+- 项目必须设置有效的 `telegram_chat_id`
+- 项目必须启用 `telegram_enabled: true`
 
 ### 向特定会话发送命令
 `POST /api/sessions/{session_id}/commands`

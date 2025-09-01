@@ -87,10 +87,10 @@ class ProjectService {
     return response.data;
   }
 
-  async updateProjectModules(projectId, enabledModules) {
+  async updateProjectModules(projectId, moduleData) {
     const response = await this.request(`/api/projects/${projectId}/modules`, {
       method: 'PUT',
-      body: JSON.stringify({ enabled_modules: enabledModules }),
+      body: JSON.stringify(moduleData),
     });
     return response.data;
   }
