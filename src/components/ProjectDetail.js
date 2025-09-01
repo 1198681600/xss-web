@@ -11,7 +11,8 @@ const ProjectDetail = ({
   onBack, 
   onEditProject, 
   onDeleteProject,
-  refreshTrigger 
+  refreshTrigger,
+  isOtherUserProject = false
 }) => {
   const [activeTab, setActiveTab] = useState('sessions');
   const [payload, setPayload] = useState('');
@@ -185,11 +186,26 @@ const ProjectDetail = ({
             <p className="project-detail__description">
               {project.description || '无描述'}
             </p>
+            {isOtherUserProject && project.owner && (
+              <div className="project-detail__owner-info">
+                <span className="project-detail__owner-label">创建者:</span>
+                <span className="project-detail__owner-value">
+                  {project.owner.username}
+                  <Badge 
+                    variant={project.owner.role === 'admin' ? 'danger' : 'secondary'} 
+                    size="xs"
+                    style={{ marginLeft: '4px' }}
+                  >
+                    {project.owner.role === 'admin' ? '管理员' : '用户'}
+                  </Badge>
+                </span>
+              </div>
+            )}
           </div>
         </div>
         
         <div className="project-detail__header-right">
-          {isAdmin() && (
+          {isAdmin() && !isOtherUserProject && onEditProject && onDeleteProject && (
             <div className="project-detail__actions">
               <Button
                 variant="ghost"
@@ -353,7 +369,7 @@ const ProjectDetail = ({
                 </div>
                 
                 <div className="project-detail__settings-actions">
-                  {isAdmin() && (
+                  {isAdmin() && !isOtherUserProject && onEditProject && (
                     <Button
                       variant="primary"
                       onClick={() => onEditProject(project)}

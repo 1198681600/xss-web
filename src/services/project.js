@@ -39,6 +39,11 @@ class ProjectService {
     return response.data;
   }
 
+  async getOtherProjects() {
+    const response = await this.request('/api/projects/others');
+    return response.data;
+  }
+
   async getProject(projectId) {
     const response = await this.request(`/api/projects/${projectId}`);
     return response.data;

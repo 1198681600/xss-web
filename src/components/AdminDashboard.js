@@ -3,12 +3,15 @@ import { Button, Badge } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import UserManagement from './UserManagement';
 import ProjectDashboard from './ProjectDashboard';
+import AllProjectsDashboard from './AllProjectsDashboard';
 import UserProfile from './UserProfile';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [selectedClient, setSelectedClient] = useState(null);
-  const [activeTab, setActiveTab] = useState('projects');
+  const [activeTab, setActiveTab] = useState('my-projects');
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const { logout, user } = useAuth();
 
   const getConnectionStatus = () => {
@@ -16,7 +19,8 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
-    { id: 'projects', name: '项目管理', icon: '📁' },
+    { id: 'my-projects', name: '我的项目', icon: '📁' },
+    { id: 'all-projects', name: '项目管理', icon: '🗂️' },
     { id: 'users', name: '用户管理', icon: '👤' },
     { id: 'profile', name: '个人设置', icon: '⚙️' }
   ];
@@ -94,12 +98,17 @@ const AdminDashboard = () => {
 
       <main className="admin-dashboard__main">
         <div className="admin-dashboard__content">
-          {activeTab === 'projects' && (
+          {activeTab === 'my-projects' && (
             <div className="admin-dashboard__tab-content">
               <ProjectDashboard hideHeader={true} />
             </div>
           )}
 
+          {activeTab === 'all-projects' && (
+            <div className="admin-dashboard__tab-content">
+              <AllProjectsDashboard hideHeader={true} />
+            </div>
+          )}
 
           {activeTab === 'users' && (
             <div className="admin-dashboard__tab-content">
