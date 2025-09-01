@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import TwoFactorManagement from './TwoFactorManagement';
 import PasswordChange from './PasswordChange';
 import { toast } from './Toast';
+import { formatDate } from '../utils/format';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -30,9 +31,7 @@ const UserProfile = () => {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('zh-CN');
-  };
+  // 使用统一的formatDate函数
 
   const tabs = [
     { id: 'profile', name: '基本信息', icon: '👤' },

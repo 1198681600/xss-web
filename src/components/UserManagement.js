@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Input, Card, Badge } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import TwoFactorManagement from './TwoFactorManagement';
+import { formatDate } from '../utils/format';
 import './UserManagement.css';
 
 const UserManagement = () => {
@@ -174,11 +175,11 @@ const UserManagement = () => {
                   </div>
                   <div className="user-management__user-meta">
                     <span className="user-management__create-time">
-                      创建时间: {new Date(user.created_at).toLocaleString()}
+                      创建时间: {formatDate(user.created_at)}
                     </span>
                     {user.updated_at && (
                       <span className="user-management__last-login">
-                        更新时间: {new Date(user.updated_at).toLocaleString()}
+                        更新时间: {formatDate(user.updated_at)}
                       </span>
                     )}
                   </div>

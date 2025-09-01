@@ -3,6 +3,7 @@ import { Button, Card, Badge } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import TwoFactorSetup from './TwoFactorSetup';
 import { toast } from './Toast';
+import { formatDate } from '../utils/format';
 import './TwoFactorManagement.css';
 
 const TwoFactorManagement = () => {
@@ -110,7 +111,7 @@ const TwoFactorManagement = () => {
               <div className="two-factor-management__status-info">
                 <span className="two-factor-management__status-label">启用时间:</span>
                 <span className="two-factor-management__status-value">
-                  {new Date(twoFactorStatus.enabledAt).toLocaleString('zh-CN')}
+                  {formatDate(twoFactorStatus.enabledAt)}
                 </span>
               </div>
             )}

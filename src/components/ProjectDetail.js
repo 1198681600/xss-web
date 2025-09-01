@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import SessionList from './SessionList';
 import projectService from '../services/project';
 import { API_BASE_URL } from '../constants/api';
+import { formatDate } from '../utils/format';
 import './ProjectDetail.css';
 
 const ProjectDetail = ({ 
@@ -140,9 +141,7 @@ const ProjectDetail = ({
       <Badge variant="secondary">停用</Badge>;
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString('zh-CN');
-  };
+  // 使用统一的formatDate函数
 
 
 

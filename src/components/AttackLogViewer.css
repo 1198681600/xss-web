@@ -410,3 +410,100 @@
     align-items: stretch;
   }
 }
+
+/* JSON key-value 展示样式 */
+.attack-log-viewer__json-kv {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.attack-log-viewer__json-item {
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.attack-log-viewer__json-item:last-child {
+  border-bottom: none;
+}
+
+.attack-log-viewer__json-item:hover {
+  background-color: var(--bg-hover, rgba(0, 0, 0, 0.05));
+}
+
+.attack-log-viewer__json-key {
+  flex: 0 0 150px;
+  padding: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  background: var(--bg-tertiary, rgba(0, 0, 0, 0.02));
+  border-right: 1px solid var(--border-color);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.attack-log-viewer__json-value {
+  flex: 1;
+  padding: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.attack-log-viewer__json-text {
+  flex: 1;
+  word-break: break-all;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.attack-log-viewer__json-object {
+  flex: 1;
+  margin: 0;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  color: #f0f0f0;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.8rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.attack-log-viewer__copy-value-btn {
+  flex-shrink: 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.attack-log-viewer__json-actions {
+  padding: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-tertiary, rgba(0, 0, 0, 0.02));
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .attack-log-viewer__json-item {
+    flex-direction: column;
+  }
+  
+  .attack-log-viewer__json-key {
+    flex: none;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .attack-log-viewer__json-value {
+    padding-top: 0.5rem;
+  }
+}

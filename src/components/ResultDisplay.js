@@ -6,6 +6,54 @@ import './ResultDisplay.css';
 const ResultDisplay = ({ results = [], onClearResults }) => {
   const [expandedResults, setExpandedResults] = useState(new Set());
 
+  const parseJsonResult = (result) => {
+    if (typeof result === 'string') {
+      try {
+        return JSON.parse(result);
+      } catch {
+        return null;
+      }
+    }
+    if (typeof result === 'object' && result !== null) {
+      return result;
+    }
+    return null;
+  };
+
+  const formatBasicResult = (result) => {
+    const parsed = parseJsonResult(result);
+    if (parsed && typeof parsed === 'object') {
+      const keys = Object.keys(parsed);
+      const preview = keys.slice(0, 3).map(key => `${key}: ${String(parsed[key]).slice(0, 30)}${String(parsed[key]).length > 30 ? '...' : ''}`).join(', ');
+      return `{${preview}${keys.length > 3 ? `, +${keys.length - 3} more` : ''}}`;
+    }
+    return formatResult(result);
+  };
+
+  const renderJsonKeyValue = (result) => {
+    const parsed = parseJsonResult(result);
+    if (!parsed || typeof parsed !== 'object') {
+      return <pre className="result-item__result-full">{typeof result === 'string' ? result : JSON.stringify(result, null, 2)}</pre>;
+    }
+
+    return (
+      <div className="result-item__json-kv">
+        {Object.entries(parsed).map(([key, value]) => (
+          <div key={key} className="json-kv-item">
+            <div className="json-kv-key">{key}:</div>
+            <div className="json-kv-value">
+              {typeof value === 'object' && value !== null ? (
+                <pre className="json-kv-object">{JSON.stringify(value, null, 2)}</pre>
+              ) : (
+                <span className="json-kv-text">{String(value)}</span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const toggleExpand = (resultId) => {
     setExpandedResults(prev => {
       const newExpanded = new Set(prev);
@@ -176,15 +224,21 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
               <div className="result-item__content">
                 <div className="result-item__result">
                   {isExpanded ? (
-                    <pre className="result-item__result-full">
-                      {typeof result.result === 'string' 
-                        ? result.result 
-                        : JSON.stringify(result.result, null, 2)
-                      }
-                    </pre>
+                    result.command === 'basic' ? (
+                      <div className="result-item__json-display">
+                        {renderJsonKeyValue(result.result)}
+                      </div>
+                    ) : (
+                      <pre className="result-item__result-full">
+                        {typeof result.result === 'string' 
+                          ? result.result 
+                          : JSON.stringify(result.result, null, 2)
+                        }
+                      </pre>
+                    )
                   ) : (
                     <div className="result-item__result-preview">
-                      {formatResult(result.result)}
+                      {result.command === 'basic' ? formatBasicResult(result.result) : formatResult(result.result)}
                     </div>
                   )}
                 </div>

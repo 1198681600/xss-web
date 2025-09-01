@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Badge, Card } from './ui';
 import attackLogService from '../services/attackLog';
-import { formatTimestamp } from '../utils/format';
+import { formatTimestamp, formatDate } from '../utils/format';
 import { toast } from './Toast';
 import './AttackLogViewer.css';
 
@@ -58,6 +58,82 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
     }).catch(() => {
       toast.error('复制失败');
     });
+  };
+
+  const parseJsonResult = (result) => {
+    if (typeof result === 'string') {
+      try {
+        return JSON.parse(result);
+      } catch {
+        return null;
+      }
+    }
+    if (typeof result === 'object' && result !== null) {
+      return result;
+    }
+    return null;
+  };
+
+  const renderBasicJsonResult = (result) => {
+    const parsed = parseJsonResult(result);
+    if (!parsed || typeof parsed !== 'object') {
+      return (
+        <div className="attack-log-viewer__detail-section">
+          <label className="attack-log-viewer__detail-label">执行结果:</label>
+          <div className="attack-log-viewer__detail-value">
+            <pre><code>{typeof result === 'string' ? result : JSON.stringify(result, null, 2)}</code></pre>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => copyToClipboard(typeof result === 'string' ? result : JSON.stringify(result, null, 2))}
+            >
+              📋
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="attack-log-viewer__detail-section">
+        <label className="attack-log-viewer__detail-label">执行结果 (JSON格式):</label>
+        <div className="attack-log-viewer__json-kv">
+          {Object.entries(parsed).map(([key, value]) => (
+            <div key={key} className="attack-log-viewer__json-item">
+              <div className="attack-log-viewer__json-key">{getFieldDisplayName(key)}</div>
+              <div className="attack-log-viewer__json-value">
+                {typeof value === 'object' && value !== null ? (
+                  <pre className="attack-log-viewer__json-object">{JSON.stringify(value, null, 2)}</pre>
+                ) : (['cookies', 'localStorage', 'sessionStorage'].includes(key)) ? (
+                  renderSpecialField(key, value)
+                ) : key === 'timestamp' ? (
+                  <span className="attack-log-viewer__json-text">{formatTimestamp(value)}</span>
+                ) : (
+                  <span className="attack-log-viewer__json-text">{String(value)}</span>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyToClipboard(typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value))}
+                  className="attack-log-viewer__copy-value-btn"
+                >
+                  📋
+                </Button>
+              </div>
+            </div>
+          ))}
+          <div className="attack-log-viewer__json-actions">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => copyToClipboard(JSON.stringify(parsed, null, 2))}
+            >
+              📋 复制完整JSON
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const parseMapData = (mapString) => {
@@ -249,7 +325,7 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
                     <span>📐 尺寸: {parsed.width} × {parsed.height}</span>
                   )}
                   {parsed.executionTime && (
-                    <span>⏱️ 截图时间: {new Date(parsed.executionTime).toLocaleString('zh-CN')}</span>
+                    <span>⏱️ 截图时间: {formatDate(parsed.executionTime)}</span>
                   )}
                 </div>
               )}
@@ -285,7 +361,7 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
                   <span>📐 尺寸: {widthMatch[1]} × {heightMatch[1]}</span>
                 )}
                 {executionTimeMatch && (
-                  <span>⏱️ 截图时间: {new Date(executionTimeMatch[1]).toLocaleString('zh-CN')}</span>
+                  <span>⏱️ 截图时间: {formatDate(executionTimeMatch[1])}</span>
                 )}
               </div>
             </div>
@@ -487,9 +563,11 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
 
                     {renderScreenshot(log.result)}
                     
-                    {/* 如果是map格式，使用专门的map展示组件 */}
+                    {/* 根据命令类型和结果格式决定展示方式 */}
                     {log.result && log.result.startsWith('map[') ? (
                       renderMapData(log.result)
+                    ) : log.command === 'basic' ? (
+                      renderBasicJsonResult(log.result)
                     ) : (
                       <div className="attack-log-viewer__detail-section">
                         <label className="attack-log-viewer__detail-label">执行结果:</label>
