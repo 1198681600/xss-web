@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Badge, Button, Loading } from './ui';
 import SessionDetail from './SessionDetail';
 import projectService from '../services/project';
+import { formatDate } from '../utils/format';
 import './SessionList.css';
 
 const SessionList = ({ projectId, refreshTrigger }) => {
@@ -61,7 +62,8 @@ const SessionList = ({ projectId, refreshTrigger }) => {
     return 'Unknown';
   };
 
-  const formatDate = (dateString) => {
+  // 使用统一的formatDate函数，但缩短显示格式
+  const formatSessionDate = (dateString) => {
     return new Date(dateString).toLocaleString('zh-CN', {
       month: '2-digit',
       day: '2-digit',
@@ -147,6 +149,7 @@ const SessionList = ({ projectId, refreshTrigger }) => {
             <div className="session-list__table-row session-list__table-row--header">
               <div className="session-list__cell session-list__cell--jid">JID</div>
               <div className="session-list__cell session-list__cell--ip">IP</div>
+              <div className="session-list__cell session-list__cell--url">URL</div>
               <div className="session-list__cell session-list__cell--browser">浏览器</div>
               <div className="session-list__cell session-list__cell--status">状态</div>
               <div className="session-list__cell session-list__cell--time">首次上线</div>
@@ -169,6 +172,11 @@ const SessionList = ({ projectId, refreshTrigger }) => {
                 <div className="session-list__cell session-list__cell--ip">
                   <span className="session-list__ip">{session.ip}</span>
                 </div>
+                <div className="session-list__cell session-list__cell--url">
+                  <span className="session-list__url" title={session.url}>
+                    {session.url || '--'}
+                  </span>
+                </div>
                 <div className="session-list__cell session-list__cell--browser">
                   <div className="session-list__browser">
                     <span className="session-list__browser-icon">
@@ -184,12 +192,12 @@ const SessionList = ({ projectId, refreshTrigger }) => {
                 </div>
                 <div className="session-list__cell session-list__cell--time">
                   <span className="session-list__time">
-                    {formatDate(session.first_online)}
+                    {formatSessionDate(session.first_online)}
                   </span>
                 </div>
                 <div className="session-list__cell session-list__cell--last">
                   <span className="session-list__time">
-                    {formatDate(session.last_online)}
+                    {formatSessionDate(session.last_online)}
                   </span>
                 </div>
                 <div className="session-list__cell session-list__cell--count">

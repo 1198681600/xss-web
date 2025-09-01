@@ -91,10 +91,32 @@
 
 .session-list__table-container {
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--bg-card);
+  width: 100%;
+  max-height: 600px;
+}
+
+
+.session-list__table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.session-list__table-container::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+}
+
+.session-list__table-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.session-list__table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 .session-list__table-header {
@@ -103,8 +125,8 @@
 }
 
 .session-list__table-body {
-  max-height: 600px;
-  overflow-y: auto;
+  overflow: visible;
+  min-width: max-content;
 }
 
 .session-list__table-row {
@@ -112,16 +134,18 @@
   grid-template-columns: 
     160px     /* JID */
     120px     /* IP */
+    250px     /* URL - 固定宽度 */
     100px     /* 浏览器 */
     70px      /* 状态 */
     100px     /* 首次上线 */
     100px     /* 上线时间 */
     60px;     /* 连接 */
-  gap: 1rem;
+  gap: 0.75rem;
   padding: 0.75rem 1rem;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
   transition: all 0.2s ease;
+  min-width: 960px;
 }
 
 .session-list__table-row:hover {
@@ -159,16 +183,25 @@
 .session-list__cell {
   font-size: 0.85rem;
   color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  display: flex;
+  align-items: center;
 }
 
 .session-list__cell--jid,
 .session-list__cell--status,
 .session-list__cell--count {
-  display: flex;
   justify-content: center;
+}
+
+.session-list__cell--url,
+.session-list__cell--ip {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.session-list__table-row--header {
+  align-items: center;
 }
 
 .session-list__table-row--header .session-list__cell {
@@ -177,6 +210,13 @@
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  justify-content: center;
+  align-items: center;
+}
+
+.session-list__table-row--header .session-list__cell--url,
+.session-list__table-row--header .session-list__cell--ip {
+  justify-content: flex-start;
 }
 
 .session-list__ip {
@@ -202,7 +242,15 @@
 .session-list__url {
   color: var(--primary-color);
   text-decoration: none;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  font-family: 'Monaco', 'Consolas', monospace;
+  display: inline-block;
+  word-break: break-all;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  white-space: normal;
+  hyphens: auto;
+  width: 100%;
 }
 
 .session-list__group {
@@ -252,15 +300,17 @@
 @media (max-width: 1200px) {
   .session-list__table-row {
     grid-template-columns: 
-      140px     /* JID */
-      100px     /* IP */
-      80px      /* 浏览器 */
-      60px      /* 状态 */
-      80px      /* 首次上线 */
-      80px      /* 上线时间 */
-      50px;     /* 连接 */
-    gap: 0.5rem;
+      150px     /* JID */
+      120px     /* IP */
+      1fr       /* URL */
+      100px     /* 浏览器 */
+      70px      /* 状态 */
+      100px     /* 首次上线 */
+      100px     /* 上线时间 */
+      60px;     /* 连接 */
+    gap: 0.75rem;
     padding: 0.5rem 0.75rem;
+    min-width: 800px;
   }
   
   .session-list__cell {
@@ -284,6 +334,15 @@
   }
   
   .session-list__table-row {
-    min-width: 800px;
+    grid-template-columns: 
+      180px     /* JID */
+      140px     /* IP */
+      1fr       /* URL */
+      120px     /* 浏览器 */
+      80px      /* 状态 */
+      120px     /* 首次上线 */
+      120px     /* 上线时间 */
+      80px;     /* 连接 */
+    min-width: 920px;
   }
 }
