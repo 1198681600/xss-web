@@ -60,6 +60,31 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
     });
   };
 
+  const decodeHtmlEntities = (text) => {
+    if (typeof text !== 'string') return text;
+    
+    const entityMap = {
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&#39;': "'",
+      '&apos;': "'",
+      '&#x27;': "'",
+      '&#x2F;': '/',
+      '&#47;': '/',
+      '&#x3C;': '<',
+      '&#60;': '<',
+      '&#x3E;': '>',
+      '&#62;': '>',
+      '&nbsp;': ' '
+    };
+    
+    return text.replace(/&[#\w]+;/g, (entity) => {
+      return entityMap[entity] || entity;
+    });
+  };
+
   const parseJsonResult = (result) => {
     if (typeof result === 'string') {
       try {
@@ -81,7 +106,7 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
         <div className="attack-log-viewer__detail-section">
           <label className="attack-log-viewer__detail-label">执行结果:</label>
           <div className="attack-log-viewer__detail-value">
-            <pre><code>{typeof result === 'string' ? result : JSON.stringify(result, null, 2)}</code></pre>
+            <pre><code>{typeof result === 'string' ? decodeHtmlEntities(result) : JSON.stringify(result, null, 2)}</code></pre>
             <Button
               variant="ghost"
               size="sm"
@@ -109,7 +134,7 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
                 ) : key === 'timestamp' ? (
                   <span className="attack-log-viewer__json-text">{formatTimestamp(value)}</span>
                 ) : (
-                  <span className="attack-log-viewer__json-text">{String(value)}</span>
+                  <span className="attack-log-viewer__json-text">{decodeHtmlEntities(String(value))}</span>
                 )}
                 <Button
                   variant="ghost"
@@ -221,7 +246,7 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
                     renderSpecialField(key, value) : 
                     key === 'timestamp' ?
                       <span className="attack-log-viewer__map-simple-value">{formatTimestamp(value)}</span> :
-                      <span className="attack-log-viewer__map-simple-value">{value}</span>
+                      <span className="attack-log-viewer__map-simple-value">{decodeHtmlEntities(String(value))}</span>
                   }
                 </div>
               </div>
@@ -264,14 +289,14 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
           <div className="attack-log-viewer__cookies">
             {cookies.map((cookie, index) => (
               <div key={index} className="attack-log-viewer__cookie-item">
-                <span className="attack-log-viewer__cookie-name">{cookie.name}</span>
-                <span className="attack-log-viewer__cookie-value">{cookie.value}</span>
+                <span className="attack-log-viewer__cookie-name">{decodeHtmlEntities(cookie.name)}</span>
+                <span className="attack-log-viewer__cookie-value">{decodeHtmlEntities(cookie.value)}</span>
               </div>
             ))}
           </div>
         );
       } catch {
-        return <span className="attack-log-viewer__map-simple-value">{value}</span>;
+        return <span className="attack-log-viewer__map-simple-value">{decodeHtmlEntities(String(value))}</span>;
       }
     }
     
@@ -284,8 +309,8 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
             <div className="attack-log-viewer__storage">
               {Object.entries(storageData).map(([storageKey, storageValue]) => (
                 <div key={storageKey} className="attack-log-viewer__storage-item">
-                  <span className="attack-log-viewer__storage-key">{storageKey}</span>
-                  <span className="attack-log-viewer__storage-value">{storageValue}</span>
+                  <span className="attack-log-viewer__storage-key">{decodeHtmlEntities(storageKey)}</span>
+                  <span className="attack-log-viewer__storage-value">{decodeHtmlEntities(String(storageValue))}</span>
                 </div>
               ))}
             </div>
@@ -294,7 +319,7 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
       } catch {
         // 继续执行，返回原始值
       }
-      return <span className="attack-log-viewer__map-simple-value">{value}</span>;
+      return <span className="attack-log-viewer__map-simple-value">{decodeHtmlEntities(String(value))}</span>;
     }
     
     return <span className="attack-log-viewer__map-simple-value">{value}</span>;
