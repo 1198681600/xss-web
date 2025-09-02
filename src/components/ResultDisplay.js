@@ -37,20 +37,39 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
     }
 
     return (
-      <div className="result-item__json-kv">
-        {Object.entries(parsed).map(([key, value]) => (
-          <div key={key} className="json-kv-item">
-            <div className="json-kv-key">{key}:</div>
-            <div className="json-kv-value">
-              {typeof value === 'object' && value !== null ? (
-                <pre className="json-kv-object">{JSON.stringify(value, null, 2)}</pre>
-              ) : (
-                <span className="json-kv-text">{String(value)}</span>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+      <table className="result-item__json-table">
+        <thead>
+          <tr>
+            <th>键 (Key)</th>
+            <th>值 (Value)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(parsed).map(([key, value]) => (
+            <tr key={key}>
+              <td className="json-table-key">{key}</td>
+              <td className="json-table-value">
+                {key === 'screenshot' && typeof value === 'string' ? (
+                  <img 
+                    src={value.startsWith('data:') ? value : `data:image/png;base64,${value}`}
+                    alt="Screenshot"
+                    className="json-table-image"
+                    style={{ maxWidth: '300px', maxHeight: '200px', border: '1px solid #ddd' }}
+                  />
+                ) : key === 'timestamp' && (typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value))) ? (
+                  <span className="json-table-timestamp">
+                    {new Date(Number(value)).toLocaleString()}
+                  </span>
+                ) : typeof value === 'object' && value !== null ? (
+                  <pre className="json-table-object">{JSON.stringify(value, null, 2)}</pre>
+                ) : (
+                  <span className="json-table-text">{String(value)}</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     );
   };
 
@@ -229,12 +248,9 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
                         {renderJsonKeyValue(result.result)}
                       </div>
                     ) : (
-                      <pre className="result-item__result-full">
-                        {typeof result.result === 'string' 
-                          ? result.result 
-                          : JSON.stringify(result.result, null, 2)
-                        }
-                      </pre>
+                      <div className="result-item__json-display">
+                        {renderJsonKeyValue(result.result)}
+                      </div>
                     )
                   ) : (
                     <div className="result-item__result-preview">
