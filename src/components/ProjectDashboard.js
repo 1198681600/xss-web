@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import ProjectList from './ProjectList';
 import ProjectDetail from './ProjectDetail';
 import ProjectForm from './ProjectForm';
+import UserProfile from './UserProfile';
 import projectService from '../services/project';
 import './ProjectDashboard.css';
 
@@ -13,6 +14,7 @@ const ProjectDashboard = ({ onProjectSelect, hideHeader = false }) => {
   const [editingProject, setEditingProject] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [activeTab, setActiveTab] = useState('projects');
   const { logout, user, isAdmin } = useAuth();
 
   const handleSelectProject = (project) => {
@@ -81,6 +83,11 @@ const ProjectDashboard = ({ onProjectSelect, hideHeader = false }) => {
     return <Badge variant="success">HTTP API</Badge>;
   };
 
+  const tabs = [
+    { id: 'projects', name: '项目管理', icon: '📁' },
+    { id: 'profile', name: '个人设置', icon: '⚙️' }
+  ];
+
   return (
     <div className="project-dashboard">
       {!hideHeader && (
@@ -116,35 +123,62 @@ const ProjectDashboard = ({ onProjectSelect, hideHeader = false }) => {
               </Button>
             </div>
           </div>
+
+          <nav className="project-dashboard__nav">
+            <div className="project-dashboard__nav-tabs">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`project-dashboard__nav-tab ${
+                    activeTab === tab.id ? 'project-dashboard__nav-tab--active' : ''
+                  }`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  <span className="project-dashboard__nav-tab-icon">{tab.icon}</span>
+                  <span className="project-dashboard__nav-tab-text">{tab.name}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
         </header>
       )}
 
       <main className="project-dashboard__main">
         <div className="project-dashboard__content">
-          {showForm ? (
-            <ProjectForm
-              project={editingProject}
-              onSave={handleSaveProject}
-              onCancel={handleCancelForm}
-              isEdit={!!editingProject}
-            />
-          ) : selectedProject ? (
-            <ProjectDetail
-              project={selectedProject}
-              onBack={handleBackToList}
-              onEditProject={handleEditProject}
-              onDeleteProject={handleDeleteProject}
-              refreshTrigger={refreshTrigger}
-            />
-          ) : (
-            <ProjectList
-              onSelectProject={handleSelectProject}
-              selectedProjectId={selectedProject?.id}
-              refreshTrigger={refreshTrigger}
-              onCreateProject={handleCreateProject}
-              onEditProject={handleEditProject}
-              onDeleteProject={handleDeleteProject}
-            />
+          {activeTab === 'projects' && (
+            <>
+              {showForm ? (
+                <ProjectForm
+                  project={editingProject}
+                  onSave={handleSaveProject}
+                  onCancel={handleCancelForm}
+                  isEdit={!!editingProject}
+                />
+              ) : selectedProject ? (
+                <ProjectDetail
+                  project={selectedProject}
+                  onBack={handleBackToList}
+                  onEditProject={handleEditProject}
+                  onDeleteProject={handleDeleteProject}
+                  refreshTrigger={refreshTrigger}
+                />
+              ) : (
+                <ProjectList
+                  onSelectProject={handleSelectProject}
+                  selectedProjectId={selectedProject?.id}
+                  refreshTrigger={refreshTrigger}
+                  onCreateProject={handleCreateProject}
+                  onEditProject={handleEditProject}
+                  onDeleteProject={handleDeleteProject}
+                />
+              )}
+            </>
+          )}
+
+          {activeTab === 'profile' && (
+            <div className="project-dashboard__tab-content">
+              <UserProfile />
+            </div>
           )}
         </div>
       </main>

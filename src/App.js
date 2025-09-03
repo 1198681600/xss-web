@@ -43,7 +43,7 @@ function App() {
           path="/" 
           element={
             <ProtectedRoute>
-              {isAdmin() ? <AdminDashboard /> : <UserDashboard />}
+              {isAdmin() ? <AdminDashboard /> : <ProjectDashboard />}
             </ProtectedRoute>
           } 
         />
