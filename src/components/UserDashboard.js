@@ -2,15 +2,22 @@ import React, { useState } from 'react';
 import { Button, Badge } from './ui';
 import { useAuth } from '../contexts/AuthContext';
 import ClientList from './ClientList';
+import UserProfile from './UserProfile';
 import './UserDashboard.css';
 
 const UserDashboard = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [activeTab, setActiveTab] = useState('clients');
   const { logout, user } = useAuth();
 
   const getConnectionStatus = () => {
     return <Badge variant="success">HTTP API</Badge>;
   };
+
+  const tabs = [
+    { id: 'clients', name: '客户端监控', icon: '👥' },
+    { id: 'profile', name: '个人设置', icon: '⚙️' }
+  ];
 
   return (
     <div className="user-dashboard">
@@ -44,47 +51,47 @@ const UserDashboard = () => {
             </Button>
           </div>
         </div>
+
+        <nav className="user-dashboard__nav">
+          <div className="user-dashboard__nav-tabs">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`user-dashboard__nav-tab ${
+                  activeTab === tab.id ? 'user-dashboard__nav-tab--active' : ''
+                }`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <span className="user-dashboard__nav-tab-icon">{tab.icon}</span>
+                <span className="user-dashboard__nav-tab-text">{tab.name}</span>
+              </button>
+            ))}
+          </div>
+        </nav>
       </header>
 
       <main className="user-dashboard__main">
         <div className="user-dashboard__content">
-          <div className="user-dashboard__info-panel">
-            <div className="user-dashboard__info-card">
-              <h3>📋 权限说明</h3>
-              <ul>
-                <li>✅ 查看连接的客户端列表</li>
-                <li>✅ 查看客户端基本信息</li>
-                <li>❌ 执行攻击命令</li>
-                <li>❌ 生成载荷代码</li>
-                <li>❌ 用户管理</li>
-              </ul>
-              <p className="user-dashboard__info-note">
-                如需更多权限，请联系管理员
-              </p>
-            </div>
-          </div>
+          {activeTab === 'clients' && (
+            <>
+              <div className="user-dashboard__client-section">
+                <div className="user-dashboard__client-list">
+                  <ClientList
+                    onSelectClient={() => {}} // 禁用选择功能
+                    selectedClientId={null}
+                    refreshTrigger={refreshTrigger}
+                    readonly={true} // 只读模式
+                  />
+                </div>
+              </div>
+            </>
+          )}
 
-          <div className="user-dashboard__client-section">
-            <div className="user-dashboard__section-header">
-              <h2 className="user-dashboard__section-title">👥 客户端列表</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setRefreshTrigger(prev => prev + 1)}
-              >
-                🔄 刷新
-              </Button>
+          {activeTab === 'profile' && (
+            <div className="user-dashboard__tab-content">
+              <UserProfile />
             </div>
-            
-            <div className="user-dashboard__client-list">
-              <ClientList
-                onSelectClient={() => {}} // 禁用选择功能
-                selectedClientId={null}
-                refreshTrigger={refreshTrigger}
-                readonly={true} // 只读模式
-              />
-            </div>
-          </div>
+          )}
         </div>
       </main>
 

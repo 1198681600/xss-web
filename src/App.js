@@ -4,6 +4,7 @@ import { useAuth } from './contexts/AuthContext';
 import LoginPage from './components/LoginPage';
 import AdminDashboard from './components/AdminDashboard';
 import ProjectDashboard from './components/ProjectDashboard';
+import UserDashboard from './components/UserDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Loading } from './components/ui';
 import { ToastContainer } from './components/Toast';
@@ -42,7 +43,7 @@ function App() {
           path="/" 
           element={
             <ProtectedRoute>
-              {isAdmin() ? <AdminDashboard /> : <ProjectDashboard />}
+              {isAdmin() ? <AdminDashboard /> : <UserDashboard />}
             </ProtectedRoute>
           } 
         />
