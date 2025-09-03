@@ -507,3 +507,79 @@
     padding-top: 0.5rem;
   }
 }
+
+/* FetchUrls specific styles */
+.attack-log-viewer__fetchurls-container {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.attack-log-viewer__fetchurls-summary {
+  padding: 0.75rem;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+.attack-log-viewer__fetchurls-item {
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-card);
+}
+
+.attack-log-viewer__fetchurls-item:last-child {
+  border-bottom: none;
+}
+
+.attack-log-viewer__fetchurls-header {
+  padding: 0.75rem;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.attack-log-viewer__fetchurls-url {
+  padding: 0.5rem 0.75rem;
+  background: rgba(6, 182, 212, 0.05);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.attack-log-viewer__fetchurls-url code {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--info-color);
+  word-break: break-all;
+}
+
+.attack-log-viewer__fetchurls-html {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.attack-log-viewer__html-preview {
+  margin-top: 0.5rem;
+}
+
+.attack-log-viewer__fetchurls-meta {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-tertiary);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .attack-log-viewer__fetchurls-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+}

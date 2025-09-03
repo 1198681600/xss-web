@@ -397,6 +397,67 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
     return null;
   };
 
+  const renderFetchUrlsResult = (result) => {
+    const parsed = parseJsonResult(result);
+    if (!parsed || !parsed.results || !Array.isArray(parsed.results)) {
+      return null;
+    }
+
+    return (
+      <div className="attack-log-viewer__detail-section">
+        <label className="attack-log-viewer__detail-label">🌐 URL抓取结果:</label>
+        <div className="attack-log-viewer__fetchurls-container">
+          <div className="attack-log-viewer__fetchurls-summary">
+            <Badge variant={parsed.status === 'completed' ? 'success' : 'warning'}>
+              {parsed.status}
+            </Badge>
+            <span>完成: {parsed.completed}/{parsed.total}</span>
+          </div>
+          
+          {parsed.results.map((item, idx) => (
+            <div key={idx} className="attack-log-viewer__fetchurls-item">
+              <div className="attack-log-viewer__fetchurls-header">
+                <strong>URL {item.index}:</strong>
+                <Badge variant={item.status === 200 ? 'success' : 'danger'}>
+                  {item.status}
+                </Badge>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyToClipboard(item.url)}
+                >
+                  📋
+                </Button>
+              </div>
+              <div className="attack-log-viewer__fetchurls-url">
+                <code>{item.url}</code>
+              </div>
+              {item.html && (
+                <div className="attack-log-viewer__fetchurls-html">
+                  <label className="attack-log-viewer__detail-label">HTML内容:</label>
+                  <div className="attack-log-viewer__html-preview">
+                    <pre><code>{item.html}</code></pre>
+                  </div>
+                </div>
+              )}
+              <div className="attack-log-viewer__fetchurls-meta">
+                <small>时间: {formatTimestamp(item.timestamp)}</small>
+              </div>
+            </div>
+          ))}
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => copyToClipboard(JSON.stringify(parsed, null, 2))}
+          >
+            📋 复制完整结果
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -591,6 +652,8 @@ const AttackLogViewer = ({ sessionId, projectId, title = "攻击记录" }) => {
                     {/* 根据命令类型和结果格式决定展示方式 */}
                     {log.result && log.result.startsWith('map[') ? (
                       renderMapData(log.result)
+                    ) : log.command === 'fetchUrls' ? (
+                      renderFetchUrlsResult(log.result)
                     ) : log.command === 'basic' ? (
                       renderBasicJsonResult(log.result)
                     ) : (

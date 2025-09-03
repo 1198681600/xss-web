@@ -20,6 +20,43 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
     return null;
   };
 
+  const renderFetchUrlsResult = (result) => {
+    const parsed = parseJsonResult(result);
+    if (!parsed || !parsed.results || !Array.isArray(parsed.results)) {
+      return renderJsonKeyValue(result);
+    }
+
+    return (
+      <div className="result-item__fetchurls">
+        <div className="fetchurls-summary">
+          <strong>状态:</strong> {parsed.status} | 
+          <strong>完成:</strong> {parsed.completed}/{parsed.total}
+        </div>
+        {parsed.results.map((item, idx) => (
+          <div key={idx} className="fetchurls-item">
+            <div className="fetchurls-item__header">
+              <strong>URL {item.index}:</strong> 
+              <span className="fetchurls-url">{item.url}</span>
+              <Badge variant={item.status === 200 ? 'success' : 'danger'}>
+                {item.status}
+              </Badge>
+            </div>
+            {item.html && (
+              <div className="fetchurls-item__html">
+                <div className="fetchurls-html-preview">
+                  <pre><code>{item.html}</code></pre>
+                </div>
+              </div>
+            )}
+            <div className="fetchurls-item__meta">
+              <small>时间: {new Date(item.timestamp).toLocaleString()}</small>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const formatBasicResult = (result) => {
     const parsed = parseJsonResult(result);
     if (parsed && typeof parsed === 'object') {
@@ -154,7 +191,8 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
       eval: { variant: 'danger', text: 'JS执行' },
       xhr: { variant: 'primary', text: 'HTTP请求' },
       screenshot: { variant: 'success', text: '截图' },
-      html: { variant: 'info', text: 'HTML' }
+      html: { variant: 'info', text: 'HTML' },
+      fetchUrls: { variant: 'primary', text: 'URL抓取' }
     };
 
     const commandInfo = commandMap[command] || { variant: 'default', text: command };
@@ -243,7 +281,11 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
               <div className="result-item__content">
                 <div className="result-item__result">
                   {isExpanded ? (
-                    result.command === 'basic' ? (
+                    result.command === 'fetchUrls' ? (
+                      <div className="result-item__fetchurls-display">
+                        {renderFetchUrlsResult(result.result)}
+                      </div>
+                    ) : result.command === 'basic' ? (
                       <div className="result-item__json-display">
                         {renderJsonKeyValue(result.result)}
                       </div>
@@ -254,7 +296,14 @@ const ResultDisplay = ({ results = [], onClearResults }) => {
                     )
                   ) : (
                     <div className="result-item__result-preview">
-                      {result.command === 'basic' ? formatBasicResult(result.result) : formatResult(result.result)}
+                      {result.command === 'fetchUrls' ? 
+                        (() => {
+                          const parsed = parseJsonResult(result.result);
+                          return parsed && parsed.results ? 
+                            `${parsed.status} - ${parsed.completed}/${parsed.total} URLs completed` :
+                            formatResult(result.result);
+                        })()
+                        : result.command === 'basic' ? formatBasicResult(result.result) : formatResult(result.result)}
                     </div>
                   )}
                 </div>
