@@ -139,13 +139,14 @@
     70px      /* 状态 */
     100px     /* 首次上线 */
     100px     /* 上线时间 */
-    60px;     /* 连接 */
+    60px      /* 连接 */
+    80px;     /* 操作 */
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   align-items: center;
   border-bottom: 1px solid var(--border-color);
   transition: all 0.2s ease;
-  min-width: 960px;
+  min-width: 1040px;
 }
 
 .session-list__table-row:hover {
@@ -281,6 +282,7 @@
 
 .session-list__cell--actions {
   flex: 0 0 80px;
+  justify-content: center;
 }
 
 .session-list__logs-header {
@@ -307,10 +309,11 @@
       70px      /* 状态 */
       100px     /* 首次上线 */
       100px     /* 上线时间 */
-      60px;     /* 连接 */
+      60px      /* 连接 */
+      80px;     /* 操作 */
     gap: 0.75rem;
     padding: 0.5rem 0.75rem;
-    min-width: 800px;
+    min-width: 880px;
   }
   
   .session-list__cell {
@@ -342,7 +345,8 @@
       80px      /* 状态 */
       120px     /* 首次上线 */
       120px     /* 上线时间 */
-      80px;     /* 连接 */
-    min-width: 920px;
+      80px      /* 连接 */
+      80px;     /* 操作 */
+    min-width: 1000px;
   }
 }

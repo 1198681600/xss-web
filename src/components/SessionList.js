@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Badge, Button, Loading } from './ui';
 import SessionDetail from './SessionDetail';
 import projectService from '../services/project';
+import apiService from '../services/api';
 import { formatDate } from '../utils/format';
 import './SessionList.css';
 
@@ -81,6 +82,23 @@ const SessionList = ({ projectId, refreshTrigger }) => {
     setSelectedSession(null);
   };
 
+  const handleDeleteSession = async (sessionId, event) => {
+    event.stopPropagation();
+    
+    if (!window.confirm('确定要删除这个会话吗？')) {
+      return;
+    }
+
+    try {
+      await apiService.deleteSession(sessionId);
+      
+      // Refresh sessions list after delete
+      await loadSessions();
+    } catch (error) {
+      setError('删除会话失败: ' + error.message);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="session-list__loading">
@@ -155,6 +173,7 @@ const SessionList = ({ projectId, refreshTrigger }) => {
               <div className="session-list__cell session-list__cell--time">首次上线</div>
               <div className="session-list__cell session-list__cell--last">上线时间</div>
               <div className="session-list__cell session-list__cell--count">连接</div>
+              <div className="session-list__cell session-list__cell--actions">操作</div>
             </div>
           </div>
           
@@ -204,6 +223,16 @@ const SessionList = ({ projectId, refreshTrigger }) => {
                   <Badge variant="outline" size="sm">
                     {session.connection_count}
                   </Badge>
+                </div>
+                <div className="session-list__cell session-list__cell--actions">
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={(event) => handleDeleteSession(session.id, event)}
+                    title="删除会话"
+                  >
+                    🗑️
+                  </Button>
                 </div>
               </div>
             ))}

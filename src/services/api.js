@@ -80,6 +80,12 @@ class ApiService {
     const endpoint = projectId ? `/${projectId}` : API_ENDPOINTS.XSS_PAYLOAD;
     return `${API_BASE_URL}${endpoint}`;
   }
+
+  async deleteSession(sessionId) {
+    return this.request(`/api/sessions/${sessionId}`, {
+      method: 'DELETE'
+    });
+  }
 }
 
 const apiService = new ApiService();
